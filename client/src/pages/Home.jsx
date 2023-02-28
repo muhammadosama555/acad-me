@@ -1,8 +1,9 @@
 import React from 'react'
+import Academies from '../components/Academies'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div><Academies/></div>
   )
 }
 
