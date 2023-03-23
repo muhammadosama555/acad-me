@@ -11,6 +11,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ListAcademy from './pages/ListAcademy';
 import ListCourse from './pages/ListCourse';
+import UpdateAcademy from './pages/UpdateAcademy';
+import UpdateCourse from './pages/UpdateCourse';
 
 const queryClient = new QueryClient()
 
@@ -28,7 +30,9 @@ function App() {
     <Route path='/login' element={<Login/>}/>
     <Route path='/register' element={<Register/>}/>
     <Route path='/listacademy' element={<ListAcademy/>}/>
-    <Route path='/listcourse' element={<ListCourse/>}/>
+    <Route path='/listcourse/:academyId' element={<ListCourse/>}/>
+    <Route path='/updateacademy/:academyId' element={<UpdateAcademy/>}/>
+    <Route path='/updatecourse/:courseId' element={<UpdateCourse/>}/>
     </Routes>
     <Footer />
     </BrowserRouter>

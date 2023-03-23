@@ -1,12 +1,16 @@
 import React, { useRef } from 'react'
+import { useParams } from 'react-router-dom';
 import { usePostCourse } from '../apiCalls/courseApiCalls';
 
 const ListCourse = () => {
 
+    const { academyId } = useParams()
+    console.log(academyId)
+
     const titleInputElement = useRef();
     const descriptionInputElement = useRef();
     const weeksInputElement = useRef();
-    const minimunSkillInputElement = useRef();
+    const minimumSkillInputElement = useRef();
     const tuitionInputElement = useRef();
  
       
@@ -28,14 +32,14 @@ const ListCourse = () => {
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = {
+        bootcampId:academyId,
         title: titleInputElement.current?.value,
         description: descriptionInputElement.current?.value,
         weeks: weeksInputElement.current?.value,
-        minimunSkill: minimunSkillInputElement.current?.value,
+        minimumSkill: minimumSkillInputElement.current?.value,
         tuition: tuitionInputElement.current?.value,
       };
       mutate( data );
-      console.log(data)
     };
     
 
@@ -62,11 +66,11 @@ const ListCourse = () => {
       ref={weeksInputElement}
       required
     />
-    <label htmlFor="minimunSkill">minimunSkill</label>
+    <label htmlFor="minimumSkill">minimumSkill</label>
     <input
       type="text"
-      name="minimunSkill"
-      ref={minimunSkillInputElement}
+      name="minimumSkill"
+      ref={minimumSkillInputElement}
       required
     />
     <label htmlFor="tuition">Tuition</label>

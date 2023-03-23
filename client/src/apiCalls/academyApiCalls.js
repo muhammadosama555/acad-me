@@ -56,3 +56,40 @@ return useMutation(postAcademy,{
   },
 })
 }
+
+// update academy
+
+export const updateAcademy = async (academyData) => {
+  console.log(academyData)
+  const user = JSON.parse(localStorage.getItem("user")) || null
+  return axios.put(`/api/v1/bootcamps/${academyData.academyId}`, academyData,{
+    headers:{
+      'authorization':"Bearer "+ user.token
+    }
+  });
+}
+
+export const useUpdateAcademy = () => {
+const navigate = useNavigate();
+return useMutation(updateAcademy,{
+  onSuccess: (data) => {
+    navigate("/");
+  },
+})
+}
+
+// delete academy
+
+export const deleteAcademy = async (academyId) => {
+  console.log(academyId)
+  const user = JSON.parse(localStorage.getItem("user")) || null
+  return axios.delete(`/api/v1/bootcamps/${academyId}`,{
+    headers:{
+      'authorization':"Bearer "+ user.token
+    }
+  });
+}
+
+export const useDeleteAcademy = () => {
+return useMutation(deleteAcademy)
+}

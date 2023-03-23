@@ -1,9 +1,10 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useGetCourseDetails } from '../apiCalls/courseApiCalls'
 
 const CourseDetails = () => {
 
+    const user = JSON.parse(localStorage.getItem("user")) || null    
     const { courseId } = useParams()
     const {isLoading,data,isError,error} = useGetCourseDetails(courseId)
 
@@ -17,7 +18,17 @@ const CourseDetails = () => {
   console.log(data);
 
   return (
-    <div>{data && data.data.data.title}</div>
+    <div>
+      <div>
+      {user?.data.role === "publisher" && 
+     (<>
+     <Link to={`/updatecourse/${courseId}`}>UpdateCourse</Link>
+     {/* <button onClick={()=>deleteHandler(courseId)}>delete</button> */}
+     </>
+     )}
+     </div> 
+      {data && data.data.data.title}
+    </div>
   )
 }
 

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 const Navbar = () => {
 
 const user = JSON.parse(localStorage.getItem("user")) || null
-console.log(user)
 
   return (
     <>
@@ -14,7 +13,6 @@ console.log(user)
      {user?.data.role === "publisher" && 
      (<>
      <Link to="/listacademy">ListAcademy</Link>
-     <Link to="/listcourse">ListCourse</Link>
      </>
      )} 
     <Link>Logout</Link>
