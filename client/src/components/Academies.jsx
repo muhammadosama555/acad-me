@@ -1,35 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getAcademies } from '../redux/apiCalls/academyApiCalls';
-import Academy from './Academy';
-import Loader from './Loader';
+import React, { useState } from 'react'
+import { useGetAcadimies } from '../apiCalls/academyApiCalls'
+import Academy from './Academy'
 
 const Academies = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const {isLoading,data,isError,error} = useGetAcadimies(currentPage)
 
-    const [isLoading, setIsLoading] = useState(true);
-  const {academyData} = useSelector((state) => state.academySlice);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (academyData.length === 0) {
-      dispatch(getAcademies())
-        .then(() => setIsLoading(false))
-        .catch((err) => console.error(err));
-    } else {
-      setIsLoading(false);
+    if (isLoading) {
+      return <h2>...isLoading</h2>
     }
-  }, [dispatch, academyData]);
+    
+    if (isError) {
+      return <h2>{error.message}</h2>
+    }
 
-  console.log(academyData)
+   
 
   return (
     <>
-      {isLoading && <Loader/>}
-      {!isLoading && academyData && (
-        academyData.data.map((academy)=>(
-            <Academy key={academy._id} academy={academy}/>
-        ))
-      )}
+    {data?.data.data.map((academy)=>(
+      <Academy key={academy._id} academy={academy} />
+    ))}
+    <div>
+      {data.data.pagination.prev && <button onClick={()=>setCurrentPage(data.data.pagination.prev?.page)}>previous</button>}
+      <div>{currentPage}</div>
+      {data.data.pagination.next && <button onClick={()=>setCurrentPage(data.data.pagination.next?.page)}>next</button>}
+    </div>
     </>
   )
 }

@@ -1,41 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Loader from '../components/Loader';
-import { getAcademyDetails } from '../redux/apiCalls/academyApiCalls';
-import { useLocation } from "react-router-dom";
+import React from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { useGetAcademyCourses, useGetAcademyDetails } from '../apiCalls/academyApiCalls'
 
 
 const AcademyDetails = () => {
 
-    const [isLoading, setIsLoading] = useState(true);
-    const {academyDetails} = useSelector((state) => state.academySlice);
-    const details = academyDetails.data 
-    const dispatch = useDispatch();
-    const location = useLocation();
-  const id = location.pathname.split("/")[2];
-  console.log(id);
+    const { academyId } = useParams()
+    const { isLoading:isAcademyLoading, data:academyDetails, isError:isAcademyError , error : academyError } = useGetAcademyDetails(academyId)
+    const { isLoading:isCoursesLoading, data:coursesData, isError:isCoursesError , error : coursesError } = useGetAcademyCourses(academyId)
   
-    useEffect(() => {
-      if (!academyDetails) {
-        dispatch(getAcademyDetails(id))
-          .then(() => setIsLoading(false))
-          .catch((err) => console.error(err));
-      } else {
-        setIsLoading(false);
-      }
-    }, [dispatch, academyDetails, id]);
+    if (isAcademyLoading && isCoursesLoading) {
+      return <h2>Loading...</h2>
+    }
   
-    console.log(academyDetails)
+    if (isAcademyError && isCoursesError) {
+      return (
+        <>
+      <h2>{academyError.message}</h2>
+      <h2>{coursesError.message}</h2>
+      </>
+      )
+    }
+
+    
+    console.log(academyId,academyDetails);
 
   return (
-    <>
-    {isLoading && <Loader/>}
-    {!isLoading && academyDetails && (
-      <>
-      <h1>{details.phone}</h1>
-      </>
-    )}
-  </>
+    <div>
+    {academyDetails && academyDetails.data.data.name}
+
+    {coursesData?.data.data.map((course)=>(
+        <div  key={course._id}>{
+       <Link to={`/coursedetails/${course._id}`}>{course.title}</Link>}</div>
+
+      ))}
+    </div>
   )
 }
 
