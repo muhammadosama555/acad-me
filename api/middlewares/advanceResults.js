@@ -1,6 +1,5 @@
 const advanceResults= (model,populate) => async (req,res,next)=>{
 
-    
     let query
 
     //Copy req.query
@@ -20,8 +19,9 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,
           match=> `$${match}`)
     
-          //Finding resource
+    //Finding resource
     query=model.find(JSON.parse(queryStr))
+
 
     //Select Fields 
     if(req.query.select){
@@ -39,14 +39,15 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
 
     //Pagination
     const page= parseInt(req.query.page,10) || 1;
-    const limit= parseInt(req.query.limit,10) || 25
+    const limit= parseInt(req.query.limit,10) || 6
     const startIndex= (page-1)*limit
     const endIndex= page*limit
     const total= await model.countDocuments()
+
     query=query.skip(startIndex).limit(limit)
 
     if(populate){
-        query:query.populate(populate)
+        query=query.populate(populate)
     }
     
     const results= await query
@@ -71,8 +72,9 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     res.advanceResults={
         success:true,
         count:results.length,
+        total,
         pagination,
-        data: results
+        data: results,
 
     }
 
