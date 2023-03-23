@@ -10,7 +10,7 @@ const ErrorResponse = require("../utils/errorResponse.js")
 //access   public
 
 exports.getReviews=asyncHandler(async(req,res,next)=>{
-    if(req.query.bootcampId){
+    if(req.params.bootcampId){
         const reviews=await Review.find({bootcamp:req.params.bootcampId})
     
         res.status(200).json({
@@ -23,6 +23,9 @@ exports.getReviews=asyncHandler(async(req,res,next)=>{
     }
   
 })
+
+
+
 // get    Single Reviews
 //route    GET   /api/v1/reviews/id
 //access   public
@@ -43,12 +46,12 @@ exports.getReview=asyncHandler(async(req,res,next)=>{
 })
 // Post   add Reviews
 //route    Post   /api/v1/bootcamps/:bootcampId/reviews
-//access   public
+//access   private
 
 exports.addReview=asyncHandler(async(req,res,next)=>{
   req.body.bootcamp=req.params.bootcampId
   req.body.user= req.user.id
-  
+  console.log(req.params);
   const bootcamp=await Bootcamp.findById(req.params.bootcampId)
 
   if(!bootcamp){
