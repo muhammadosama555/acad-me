@@ -33,7 +33,8 @@ const ReviewSchema = new mongoose.Schema({
         required:true
     }
 })
-
+//Preventing user from submitting more than 1 review
+ReviewSchema.index({bootcamp:1, user: 1},{unique:true})
 
 
 

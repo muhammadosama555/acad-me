@@ -6,7 +6,7 @@ const router= express.Router({mergeParams: true})
 
 router.get('/',getCourses)
 router.get('/:id',getSingleCourse)
-router.post('/',postNewCourse,protect)
+router.post('/',protect,postNewCourse)
 router.put('/:id',updateCourse,protect)
 router.delete('/:id',deleteCourse,protect)
 
