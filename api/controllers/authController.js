@@ -70,6 +70,22 @@ const sendTokenResponse = (user,statusCode,res)=>{
 //route   Post /api/v1/auth/me
 //access  Private
 
+exports.logout = asyncHandler(async (req,res,next)=>{
+     
+    res.cookie('token',null,{
+        expires:new Date(Date.now()),
+        httpOnly:true
+    })
+    
+    res.status(200).json({
+        success:true,
+        message:"user logged out"
+    })
+})
+//desc   Get curent login  user
+//route   Post /api/v1/auth/me
+//access  Private
+
 exports.getMe = asyncHandler(async (req,res,next)=>{
     const user = await User.findById(req.user.id)
     
