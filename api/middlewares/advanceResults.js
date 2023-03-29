@@ -7,7 +7,7 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     
 
     // Fields to exclude 
-    const removeFields =['select','sort','page','limit']
+    const removeFields =['select','sort','page','limit',]
 
     //Loop over removeFields and delete then from reqQuery
     removeFields.forEach(param => delete reqQuery[param])
@@ -15,7 +15,7 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     
 
     //Create query String
-    let queryStr=JSON.stringify(req.query)
+    let queryStr= JSON.stringify(req.query)
     queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,
           match=> `$${match}`)
     
@@ -27,7 +27,10 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     if(req.query.select){
       const fields =req.query.select.split(',').join(' ')
       query=query.select(fields)
+      
     }
+    //
+   
 
     //Sort
     if(req.query.sort){
@@ -36,6 +39,17 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     }else{
       query=query.sort('-createdAt')
     }
+
+    //Search
+    if(req.query.keyword){
+        const keyword = req.query.keyword;
+        
+        const query = query.filter((item) => {
+          return item.name.toLowerCase().includes( keyword.toLowerCase());
+          });
+        } 
+
+ 
 
     //Pagination
     const page= parseInt(req.query.page,10) || 1;
@@ -53,6 +67,8 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     if(populate){
         query=query.populate(populate)
     }
+
+    
     
     const results= await query
     
