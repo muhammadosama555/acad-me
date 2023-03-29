@@ -76,7 +76,7 @@ exports.updateBootcamps=asyncHandler( async(req,res,next)=>{
         }
 
         //Make sure user is bootcamp owner
-        if(bootcamp.user.toString() !==req.user.id && (req.user.role !== 'admin' || req.user.role !== 'publisher')){
+        if(bootcamp.user.toString() !==req.user.id && req.user.role !== 'admin'){
           return next(
             new ErrorResponse('user id is not authorized to update',400)
           )
@@ -116,7 +116,7 @@ exports.deleteBootcamps=asyncHandler( async(req,res,next)=>{
     
  }
   //Make sure user is bootcamp owner 
-  if(bootcamp.user.toString() !==req.user.id && (req.user.role !== 'admin' || req.user.role !== 'publisher')){
+  if(bootcamp.user.toString() !==req.user.id && req.user.role !== 'admin'){
     return next(
       new ErrorResponse('user id is not authorized to update',400)
     )

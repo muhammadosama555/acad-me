@@ -37,25 +37,30 @@
   }
 }
 
-/* Pagination */
+/* Ratings */
 
-.page-item.active .page-link {
-  background-color: #fa9c23;
-  border-color: #fa9c23;
-  color: #fff;
+.rating-outer {
+  display: inline-block;
+  position: relative;
+  font-family: FontAwesome;
+  color: #fdcc0d;
+  max-width: fit-content;
 }
 
-.page-link {
-  padding: 2px 5px;
-  color: #fa9c23;
+.rating-outer::before {
+  content: '\f006 \f006 \f006 \f006 \f006';
 }
 
-.page-link:hover {
-  color: #fa9c23;
+.rating-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
 }
 
-.pagination{
-  display: flex;
-gap: 10px;
+.rating-inner::before {
+  content: '\f005 \f005 \f005 \f005 \f005';
+  color: #f8ce0b;
 }
-

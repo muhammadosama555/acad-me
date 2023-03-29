@@ -30,7 +30,22 @@ export const useRegister = () => {
   const navigate = useNavigate();
   return useMutation(register,{
     onSuccess: (data) => {
-      navigate("/");
+      navigate("/login");
     },
   })
+}
+
+// User to logout
+
+export const logout = async () => {
+  return axios.get("/api/v1/auth/logout");
+}
+
+export const useLogout = () => {
+const navigate = useNavigate();
+return useMutation(logout,{
+  onSuccess: (data) => {
+    navigate("/");
+  },
+})
 }
