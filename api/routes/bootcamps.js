@@ -1,14 +1,14 @@
 const express= require('express')
 const { getBootcamps, getSingleBootcamps, postBootcamps, updateBootcamps, deleteBootcamps, getBootcampsInRadius, bootcampPhotoUpload } = require('../controllers/bootcamps')
 const { route } = require('./courses')
-const Bootcamp=require('../models/Bootcamp')
+
 
 //Include other resources routers
 const courseRouter =require('./courses') 
 const reviewRouter =require('./reviews') 
 
 
-
+const Bootcamp=require('../models/Bootcamp')
 const advanceResults = require('../middlewares/advanceResults')
 const { protect, authorize } = require('../middlewares/auth')
 
