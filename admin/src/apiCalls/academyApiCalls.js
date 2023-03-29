@@ -1,6 +1,7 @@
 import { useMutation, useQuery} from 'react-query'
 import axios from 'axios'
 import { useQueryClient } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -67,3 +68,23 @@ export const useUpdateAcademy = () => {
     },
   })
   }
+
+  // post academy
+
+export const postAcademy = async (academyData) => {
+  const user = JSON.parse(localStorage.getItem("user")) || null
+  return axios.post("/api/v1/bootcamps", academyData,{
+    headers:{
+      'authorization':"Bearer "+ user.token
+    }
+  });
+}
+
+export const usePostAcademy = () => {
+const navigate = useNavigate();
+return useMutation(postAcademy,{
+  onSuccess: (data) => {
+    navigate("/acadamies");
+  },
+})
+}

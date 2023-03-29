@@ -67,7 +67,7 @@ export default function Academy() {
   return (
     <div className="product">
       <div className="productTitleContainer">
-        <h1 className="productTitle">Academy</h1>
+        <h1 className="productTitle">Edit Academy</h1>
       </div>
       <div className="productTop">
           <div className="productTopLeft">
@@ -116,7 +116,7 @@ export default function Academy() {
       <div className="productBottom">
           <form className="productForm" onSubmit={handleSubmit}>
               <div className="productFormLeft">
-                  <label>Product Name</label>
+                  <label>Academy Name</label>
                   <input
                    type="text"
                    name="name"

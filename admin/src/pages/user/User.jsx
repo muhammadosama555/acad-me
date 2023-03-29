@@ -1,14 +1,62 @@
 import {
   CalendarToday,
-  LocationSearching,
   MailOutline,
-  PermIdentity,
-  PhoneAndroid,
   Publish,
 } from "@material-ui/icons";
+import { useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useGetUserDetails, useUpdateUser } from "../../apiCalls/userApiCalls";
+import normalDate from "../../utils";
 import "./user.css";
 
 export default function User() {
+
+  const nameInputElement = useRef();
+  const emailInputElement = useRef();
+  const roleInputElement = useRef();
+ 
+  const { userId } = useParams()
+  const { isLoading:isUserLoading, data:userDetails, isError:isUserError , error:userError, } = useGetUserDetails(userId)
+  const { mutate:updateUserMutate, isLoading:isUpdateUserLoading, isError:isUpdateUserError, error:updateUserError} = useUpdateUser(userId);
+
+  if (isUserLoading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (isUserError) {
+    return (
+      <>
+        <h2>{userError.message}</h2>
+      </>
+    );
+  }
+  
+  if (isUpdateUserLoading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (isUpdateUserError) {
+    return (
+      <>
+        <h2>{updateUserError.message}</h2>
+      </>
+    );
+  }
+
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = {
+      userId: userId,
+      name: nameInputElement.current?.value,
+      email: emailInputElement.current?.value,
+      role: roleInputElement.current?.value,
+    };
+    updateUserMutate(data);
+    console.log(data);
+  };
+
+
   return (
     <div className="user">
       <div className="userTitleContainer">
@@ -23,52 +71,32 @@ export default function User() {
               className="userShowImg"
             />
             <div className="userShowTopTitle">
-              <span className="userShowUsername">Anna Becker</span>
-              <span className="userShowUserTitle">Software Engineer</span>
+              <span className="userShowUsername">{userDetails.data.data.name}</span>
             </div>
           </div>
           <div className="userShowBottom">
             <span className="userShowTitle">Account Details</span>
             <div className="userShowInfo">
-              <PermIdentity className="userShowIcon" />
-              <span className="userShowInfoTitle">annabeck99</span>
-            </div>
-            <div className="userShowInfo">
               <CalendarToday className="userShowIcon" />
-              <span className="userShowInfoTitle">10.12.1999</span>
+              <span className="userShowInfoTitle">{normalDate(userDetails.data.data.createdAt)}</span>
             </div>
             <span className="userShowTitle">Contact Details</span>
             <div className="userShowInfo">
-              <PhoneAndroid className="userShowIcon" />
-              <span className="userShowInfoTitle">+1 123 456 67</span>
-            </div>
-            <div className="userShowInfo">
               <MailOutline className="userShowIcon" />
-              <span className="userShowInfoTitle">annabeck99@gmail.com</span>
-            </div>
-            <div className="userShowInfo">
-              <LocationSearching className="userShowIcon" />
-              <span className="userShowInfoTitle">New York | USA</span>
+              <span className="userShowInfoTitle">{userDetails.data.data.email}</span>
             </div>
           </div>
         </div>
         <div className="userUpdate">
           <span className="userUpdateTitle">Edit</span>
-          <form className="userUpdateForm">
+          <form className="userUpdateForm" onSubmit={handleSubmit}>
             <div className="userUpdateLeft">
               <div className="userUpdateItem">
                 <label>Username</label>
                 <input
                   type="text"
-                  placeholder="annabeck99"
-                  className="userUpdateInput"
-                />
-              </div>
-              <div className="userUpdateItem">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  placeholder="Anna Becker"
+                  ref={nameInputElement}
+                  defaultValue={userDetails.data.data.name}
                   className="userUpdateInput"
                 />
               </div>
@@ -76,26 +104,21 @@ export default function User() {
                 <label>Email</label>
                 <input
                   type="text"
-                  placeholder="annabeck99@gmail.com"
+                  ref={emailInputElement}
+                  defaultValue={userDetails.data.data.email}
                   className="userUpdateInput"
                 />
               </div>
               <div className="userUpdateItem">
-                <label>Phone</label>
+                <label>Role</label>
                 <input
                   type="text"
-                  placeholder="+1 123 456 67"
+                  ref={roleInputElement}
+                  defaultValue={userDetails.data.data.role}
                   className="userUpdateInput"
                 />
               </div>
-              <div className="userUpdateItem">
-                <label>Address</label>
-                <input
-                  type="text"
-                  placeholder="New York | USA"
-                  className="userUpdateInput"
-                />
-              </div>
+            
             </div>
             <div className="userUpdateRight">
               <div className="userUpdateUpload">

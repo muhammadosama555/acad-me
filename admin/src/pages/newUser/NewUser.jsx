@@ -1,51 +1,65 @@
+import { useRef } from "react";
+import { usePostUser } from "../../apiCalls/userApiCalls";
 import "./newUser.css";
 
 export default function NewUser() {
+
+  const nameInputElement = useRef();
+  const emailInputElement = useRef();
+  const passwordInputElement = useRef();
+
+  const { mutate:postUserMutate, isLoading:isPostUserLoading, isError:isPostUserError , error:postUserError } = usePostUser()
+
+  if (isPostUserLoading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (isPostUserError) {
+    return (
+      <>
+        <h2>{postUserError.message}</h2>
+      </>
+    );
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = {
+      name: nameInputElement.current?.value,
+      email: emailInputElement.current?.value,
+      password: passwordInputElement.current?.value,
+    };
+    postUserMutate(data);
+    console.log(data);
+  };
+
   return (
     <div className="newUser">
       <h1 className="newUserTitle">New User</h1>
-      <form className="newUserForm">
+      <form className="newUserForm" onSubmit={handleSubmit}>
         <div className="newUserItem">
           <label>Username</label>
-          <input type="text" placeholder="john" />
-        </div>
-        <div className="newUserItem">
-          <label>Full Name</label>
-          <input type="text" placeholder="John Smith" />
+          <input
+           type="text"
+          placeholder="john"
+          ref={nameInputElement}
+           />
         </div>
         <div className="newUserItem">
           <label>Email</label>
-          <input type="email" placeholder="john@gmail.com" />
+          <input
+           type="email"
+          placeholder="john@gmail.com"
+          ref={emailInputElement}
+           />
         </div>
         <div className="newUserItem">
-          <label>Password</label>
-          <input type="password" placeholder="password" />
-        </div>
-        <div className="newUserItem">
-          <label>Phone</label>
-          <input type="text" placeholder="+1 123 456 78" />
-        </div>
-        <div className="newUserItem">
-          <label>Address</label>
-          <input type="text" placeholder="New York | USA" />
-        </div>
-        <div className="newUserItem">
-          <label>Gender</label>
-          <div className="newUserGender">
-            <input type="radio" name="gender" id="male" value="male" />
-            <label for="male">Male</label>
-            <input type="radio" name="gender" id="female" value="female" />
-            <label for="female">Female</label>
-            <input type="radio" name="gender" id="other" value="other" />
-            <label for="other">Other</label>
-          </div>
-        </div>
-        <div className="newUserItem">
-          <label>Active</label>
-          <select className="newUserSelect" name="active" id="active">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+          <label>password</label>
+          <input
+           type="password"
+            placeholder="******"
+            ref={passwordInputElement}
+             />
         </div>
         <button className="newUserButton">Create</button>
       </form>

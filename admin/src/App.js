@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserList from "./pages/userList/UserList";
 import User from "./pages/user/User";
 import NewUser from "./pages/newUser/NewUser";
-import NewProduct from "./pages/newProduct/NewProduct";
+import NewProduct from "./pages/newAcademy/NewAcademy";
 import Login from "./pages/login/Login";
 import AcademyList from "./pages/academyList/AcademyList";
 import Academy from "./pages/academy/Academy";
@@ -36,7 +36,7 @@ function App() {
           <Route path="/newUser" element={<NewUser />}></Route>
           <Route path="/acadamies" element={<AcademyList />}></Route>
           <Route path="/academy/:academyId" element={<Academy />}></Route>
-          <Route path="/newproduct" element={<NewProduct />}></Route>
+          <Route path="/newAcademy" element={<NewProduct />}></Route>
         </Routes>
         </div>
     </>

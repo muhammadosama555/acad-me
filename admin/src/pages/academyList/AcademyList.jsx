@@ -9,7 +9,6 @@ import { useDeleteAcademy, useGetAcadimies } from "../../apiCalls/academyApiCall
 export default function AcademyList() {
 
  const {isLoading:isAcadamiesLoading,data,isError:isAcadamiesError,error:AcadamiesError} = useGetAcadimies()
- console.log(data)
  const {mutate, isLoading, isError, error} = useDeleteAcademy();
 
  if (isAcadamiesLoading) {
@@ -19,6 +18,7 @@ export default function AcademyList() {
 if (isAcadamiesError) {
   return <h2>{AcadamiesError.message}</h2>
 }
+
  if (isLoading) {
   return <h2>...isLoading</h2>
 }
@@ -81,7 +81,7 @@ if (isError) {
   return (
     <div className="productList">
       <div style={{ padding: "10px 0px" }}>
-        <Link to="/newUser">
+        <Link to="/newAcademy">
           <button className="userAddButton">Create</button>
         </Link>
       </div>

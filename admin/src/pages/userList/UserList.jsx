@@ -1,41 +1,60 @@
 import "./userList.css";
 import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
-import { userRows } from "../../dummyData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useDeleteUser, useGetUsers } from "../../apiCalls/userApiCalls";
+
 
 export default function UserList() {
-  const [data, setData] = useState(userRows);
+  
+  const {isLoading:isUsersLoading, data:users, isError:isUsersError, error:usersError} = useGetUsers()
+  const {mutate:deleteUserMutate, isLoading:isDeleteUserLoading, isError:isDeleteUserError, error:deleteUserError} = useDeleteUser();
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
-  };
+  if (isUsersLoading) {
+    return <h2>...isLoading</h2>
+  }
+  
+  if (isUsersError) {
+    return <h2>{usersError.message}</h2>
+  }
+
+  if (isDeleteUserLoading) {
+    return <h2>...isLoading</h2>
+  }
+  
+  if (isDeleteUserError) {
+    return <h2>{deleteUserError.message}</h2>
+  }
+  
+    const handleDelete = (userId) => {
+       deleteUserMutate(userId)
+    };
   
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "_id", headerName: "ID", width: 90 },
     {
-      field: "user",
-      headerName: "User",
+      field: "name",
+      headerName: "Name",
       width: 200,
       renderCell: (params) => {
         return (
           <div className="userListUser">
             <img className="userListImg" src={params.row.avatar} alt="" />
-            {params.row.username}
+            {params.row.name}
           </div>
         );
       },
     },
     { field: "email", headerName: "Email", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
+      field: "role",
+      headerName: "Role",
       width: 120,
     },
     {
-      field: "transaction",
-      headerName: "Transaction Volume",
+      field: "createdAt",
+      headerName: "created on",
       width: 160,
     },
     {
@@ -45,12 +64,12 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/user/" + params.row.id}>
+            <Link to={"/user/" + params.row._id}>
               <button className="userListEdit">Edit</button>
             </Link>
             <DeleteOutline
               className="userListDelete"
-              onClick={() => handleDelete(params.row.id)}
+             onClick={() => handleDelete(params.row._id)}
             />
           </>
         );
@@ -66,7 +85,8 @@ export default function UserList() {
         </Link>
       </div>
       <DataGrid
-        rows={data}
+        rows={users?.data.data}
+        getRowId={(row) => row._id}
         disableSelectionOnClick
         columns={columns}
         pageSize={8}
