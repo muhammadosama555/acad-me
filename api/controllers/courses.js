@@ -12,15 +12,10 @@ const Bootcamp = require('../models/Bootcamp.js')
 exports.getCourses=asyncHandler(async(req,res,next)=>{
     let query
 
-    if(req.query.bootcampId){
-        query=Course.findById(req.query.bootcampId)
+    if(req.params.bootcampId){
+        query=Course.find({bootcamp:req.params.bootcampId})
     }else{
-        query=Course.find().populate({
-
-            path: 'bootcamp',
-            select: 'name description'
-
-        })
+        query=Course.find()
     }
 
     const courses= await query
