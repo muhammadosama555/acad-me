@@ -91,5 +91,10 @@ export const deleteAcademy = async (academyId) => {
 }
 
 export const useDeleteAcademy = () => {
-return useMutation(deleteAcademy)
+  const navigate = useNavigate();
+return useMutation(deleteAcademy,{
+  onSuccess: (data) => {
+    navigate("/");
+  },
+})
 }
