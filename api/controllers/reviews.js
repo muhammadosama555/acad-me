@@ -12,7 +12,7 @@ const ErrorResponse = require("../utils/errorResponse.js")
 exports.getReviews=asyncHandler(async(req,res,next)=>{
     if(req.params.bootcampId){
         const reviews=await Review.find({bootcamp:req.params.bootcampId})
-    
+      
         res.status(200).json({
             success:true,
             count: reviews.length,
@@ -51,7 +51,7 @@ exports.getReview=asyncHandler(async(req,res,next)=>{
 exports.addReview=asyncHandler(async(req,res,next)=>{
   req.body.bootcamp=req.params.bootcampId
   req.body.user= req.user.id
-  console.log(req.params);
+  
   const bootcamp=await Bootcamp.findById(req.params.bootcampId)
 
   if(!bootcamp){
@@ -63,6 +63,67 @@ exports.addReview=asyncHandler(async(req,res,next)=>{
   res.status(201).json({
     success:true,
     data: review
+  })
+
+})
+// Update   Reviews
+//route    Put   /api/v1/reviews/:id
+//access   private
+
+exports.updateReview=asyncHandler(async(req,res,next)=>{
+  
+  let review=await Review.findById(req.params.id)
+
+  if(!review){
+    return next(new ErrorResponse('no review found with given id',404))
+  }
+
+  //Make sure review belongs to user
+  if(review.user.toString() !==req.user.id && req.user.role !== 'admin' ){
+
+    return next(new ErrorResponse('Not authorized',401))
+
+  }
+
+  review = await Review.findByIdAndUpdate(req.params.id,req.body,{
+    new:true,
+    runValidators:true
+  })
+
+  
+
+  res.status(201).json({
+    success:true,
+    data: review
+  })
+
+})
+// Delete   Review
+//route    Delete  /api/v1/reviews/:id
+//access   private
+
+exports.deleteReview=asyncHandler(async(req,res,next)=>{
+  
+  let review=await Review.findById(req.params.id)
+
+  if(!review){
+    return next(new ErrorResponse('no review found with given id',404))
+  }
+
+  //Make sure review belongs to user
+  if(review.user.toString() !==req.user.id && req.user.role !== 'admin' ){
+
+    return next(new ErrorResponse('Not authorized',401))
+
+  }
+
+  review = await review.remove()
+
+  
+
+  res.status(201).json({
+    success:true,
+    message: "review successfully deleted"
   })
 
 })
