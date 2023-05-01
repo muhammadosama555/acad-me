@@ -64,3 +64,10 @@
   content: '\f005 \f005 \f005 \f005 \f005';
   color: #f8ce0b;
 }
+
+.shadow-bold:hover{
+  text-shadow: 1px 0 0 black;
+}
+p {
+  font-family: 'poppins';
+}

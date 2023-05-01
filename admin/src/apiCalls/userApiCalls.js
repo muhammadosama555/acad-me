@@ -12,17 +12,20 @@ export const login = async (userData) => {
 export const useLogin = () => {
 return useMutation(login,{
   onSuccess: (data) => {
-    localStorage.setItem("user",JSON.stringify(data?.data))
+  localStorage.setItem("user",JSON.stringify(data?.data))
+  
   },
 })
 }
+
+
 
 // get all users
 
 const getUsers = async () => {
   const user = JSON.parse(localStorage.getItem("user")) || null
   console.log(user.token)
-  return await axios.get("/api/v1/auth/users",{
+  return await axios.get("/api/v1/auth/users?limit=999",{
     headers:{
       'authorization':"Bearer "+ user.token
     }
@@ -32,6 +35,18 @@ const getUsers = async () => {
 export const useGetUsers = () => {
  
   return useQuery('users', getUsers)
+}
+
+// get user details
+
+const getUser = async () => {
+  return JSON.parse(localStorage.getItem("user")) || null
+ 
+}
+
+export const useGetUser = () => {
+ 
+  return useQuery('user', getUser)
 }
 
 // delete user

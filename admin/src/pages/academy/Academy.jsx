@@ -3,9 +3,10 @@ import "./academy.css";
 import Chart from "../../components/chart/Chart"
 import {productData} from "../../dummyData"
 import { Publish } from "@material-ui/icons";
-import { useGetAcademyDetails, useUpdateAcademy } from "../../apiCalls/academyApiCalls";
+import { useGetAcademyCourses, useGetAcademyDetails, useUpdateAcademy } from "../../apiCalls/academyApiCalls";
 import normalDate from "../../utils";
 import { useRef } from "react";
+import { useDeleteCourse } from "../../apiCalls/courseApiCalls";
 
 export default function Academy() {
 
@@ -21,6 +22,8 @@ export default function Academy() {
     const { academyId } = useParams()
     const { isLoading:isAcademyLoading, data:academyDetails, isError:isAcademyError , error :academyError } = useGetAcademyDetails(academyId)
     const { mutate:updateAcademyMutate, isLoading:isUpdateAcademyLoading, isError:isUpdateAcademyError, error:updateAcademyError } = useUpdateAcademy(academyId);
+    const { isLoading:isCoursesLoading, data:coursesData, isError:isCoursesError , error:coursesError } = useGetAcademyCourses(academyId)
+    const {mutate:deleteCourseMutate, isLoading:isDeleteCourseLoading, isError:isDeleteCourseError, error:deleteCourseError} = useDeleteCourse();
   
   
     if (isAcademyLoading) {
@@ -46,6 +49,26 @@ export default function Academy() {
         </>
       );
     }
+
+    if (isCoursesLoading) {
+      return <h2>Loading...</h2>;
+    }
+  
+    if (isCoursesError) {
+      return (
+        <>
+          <h2>{coursesError.message}</h2>
+        </>
+      );
+    }
+
+    if (isDeleteCourseLoading) {
+      return <h2>...isLoading</h2>
+    }
+    
+    if (isDeleteCourseError) {
+      return <h2>{deleteCourseError.message}</h2>
+    }
   
     const handleSubmit = (event) => {
       event.preventDefault();
@@ -62,6 +85,11 @@ export default function Academy() {
       updateAcademyMutate(data);
       console.log(data);
     };
+
+    
+      const deleteHandler = (courseId) => {
+        deleteCourseMutate(courseId)
+      };
   
     
   return (
@@ -108,6 +136,17 @@ export default function Academy() {
                     <span className="productInfoKey">created At:</span>
                     <span className="productInfoValue">{normalDate(academyDetails.data.data.createdAt)}</span>
                 </div>
+                <h1>Courses</h1>
+                <Link to={`/newCourse/${academyId}`}>
+          <button className="productAddButton">Create</button>
+        </Link>
+                {coursesData?.data.data.map((course)=>(
+        <div  key={course._id}>{
+       <Link to={`/course/${course._id}`}>{course.title}</Link>}
+       <button onClick={()=>deleteHandler(course._id)}>delete</button>
+       </div>
+
+      ))}
             </div>
         </div>
           )}

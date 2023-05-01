@@ -30,7 +30,6 @@ const Login = () => {
       password: passwordInputElement.current?.value,
     };
     mutate( data );
-    console.log(data)
   };
 
   return (

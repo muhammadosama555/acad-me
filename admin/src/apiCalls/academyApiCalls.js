@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 // get academies
 
 const getAcadimies = async () => {
-  return await axios.get("/api/v1/bootcamps")
+  return await axios.get("/api/v1/bootcamps?limit=999")
 }
 
 export const useGetAcadimies = () => {
@@ -87,4 +87,15 @@ return useMutation(postAcademy,{
     navigate("/acadamies");
   },
 })
+}
+
+// get academy courses
+
+const getAcademyCourses = async (academyId) => {
+  return await axios.get(`/api/v1/bootcamps/${academyId}/courses`)
+}
+
+export const useGetAcademyCourses = (academyId) => {
+ 
+  return useQuery(['courses', academyId], () => getAcademyCourses(academyId))
 }

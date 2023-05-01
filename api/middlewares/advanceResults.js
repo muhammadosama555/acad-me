@@ -12,13 +12,23 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     //Loop over removeFields and delete then from reqQuery
     removeFields.forEach(param => delete reqQuery[param])
 
-    
+    //Add keyword search to query object
+    if (req.query.keyword) {
+      const keyword = req.query.keyword;
+      reqQuery.$or = [
+        { name: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } },
+        { title: { $regex: keyword, $options: 'i' } }
+      ];
+    }
 
     //Create query String
-    let queryStr= JSON.stringify(req.query)
+    let queryStr= JSON.stringify(reqQuery)
+    
+    //Create operators
     queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,
           match=> `$${match}`)
-    
+
     //Finding resource
     query=model.find(JSON.parse(queryStr))
 
@@ -29,7 +39,6 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
       query=query.select(fields)
       
     }
-    //
    
 
     //Sort
@@ -39,16 +48,6 @@ const advanceResults= (model,populate) => async (req,res,next)=>{
     }else{
       query=query.sort('-createdAt')
     }
-
-    //Search
-    if(req.query.keyword){
-        const keyword = req.query.keyword;
-        
-        const query = query.filter((item) => {
-          return item.name.toLowerCase().includes( keyword.toLowerCase());
-          });
-        } 
-
  
 
     //Pagination

@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react"
 import axios from "axios"
 import { useMutation, useQuery } from "react-query"
 import { useQueryClient } from 'react-query'
@@ -26,9 +27,16 @@ export const postReview = async (reviewData) => {
   }
   
   export const usePostReview = () => {
+    const toast = useToast();
     const queryClient = useQueryClient()
   return useMutation(postReview,{
     onSuccess: (data) => {
+      toast({
+        title: "Review Added Successfully",
+        status: "success",
+        duration: 3000, // Duration in milliseconds
+        isClosable: true,
+      })
         queryClient.invalidateQueries('review');
     },
   })

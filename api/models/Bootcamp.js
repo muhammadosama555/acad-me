@@ -71,7 +71,7 @@ const BootcampSchema=mongoose.Schema({
       averageRating: {
         type:Number,
         min: [1,'Rating must me atleast 1'],
-        max: [10,'Rating must me below 10'],
+        max: [5,'Rating must me below 6'],
       },
       averageCost: {
         type:Number,

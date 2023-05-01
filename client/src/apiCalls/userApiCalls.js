@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import axios from "axios"
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +12,18 @@ export const login = async (userData) => {
   }
 
 export const useLogin = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   return useMutation(login,{
     onSuccess: (data) => {
+      console.log(data)
       localStorage.setItem("user",JSON.stringify(data?.data))
+      toast({
+        title: "login Successfully",
+        status: "success",
+        duration: 3000, // Duration in milliseconds
+        isClosable: true,
+      })
       navigate("/");
     },
   })
@@ -27,9 +36,16 @@ export const register = async (userData) => {
   }
 
 export const useRegister = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   return useMutation(register,{
     onSuccess: (data) => {
+      toast({
+        title: `account created Successfully`,
+        status: "success",
+        duration: 3000, // Duration in milliseconds
+        isClosable: true,
+      })
       navigate("/login");
     },
   })

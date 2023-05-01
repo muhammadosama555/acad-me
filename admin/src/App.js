@@ -1,8 +1,7 @@
 import Sidebar from "./components/sidebar/Sidebar";
 import Topbar from "./components/topbar/Topbar";
 import "./App.css";
-import { QueryClientProvider,QueryClient } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
+
 import Home from "./pages/home/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserList from "./pages/userList/UserList";
@@ -12,17 +11,24 @@ import NewProduct from "./pages/newAcademy/NewAcademy";
 import Login from "./pages/login/Login";
 import AcademyList from "./pages/academyList/AcademyList";
 import Academy from "./pages/academy/Academy";
+import Course from "./pages/course/Course";
+import NewCourse from "./pages/newCourse/NewCourse";
+import { useGetUser } from "./apiCalls/userApiCalls";
 
-const queryClient = new QueryClient()
+
+
+
 
 
 function App() {
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  console.log(user?.data.role)
+
+  const { isLoading:isUserLoading, data:user, isError:isUserError , error:userError } = useGetUser()
+
+  console.log(user)
 
   return (
     <>
-    <QueryClientProvider client={queryClient}>
+    
     <BrowserRouter>
     {user?.data.role == "admin" ? ( 
     <>
@@ -37,6 +43,8 @@ function App() {
           <Route path="/acadamies" element={<AcademyList />}></Route>
           <Route path="/academy/:academyId" element={<Academy />}></Route>
           <Route path="/newAcademy" element={<NewProduct />}></Route>
+          <Route path="/course/:courseId" element={<Course />}></Route>
+          <Route path="/newCourse/:academyId" element={<NewCourse />}></Route>
         </Routes>
         </div>
     </>
@@ -46,8 +54,7 @@ function App() {
     }
           
   </BrowserRouter>
-  <ReactQueryDevtools intialIsOpen={false} position="bottom-right" />
-  </QueryClientProvider>
+
   </>
   );
 }

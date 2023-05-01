@@ -1,16 +1,16 @@
 import { useMutation, useQuery} from 'react-query'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { useToast } from '@chakra-ui/react'
 
 // get academies
 
-const getAcadimies = async (currentPage) => {
-  return await axios.get(`/api/v1/bootcamps?page=${currentPage}`)
+const getAcademies = async (currentPage,limit,keyword) => {
+  return await axios.get(`/api/v1/bootcamps?page=${currentPage}&limit=${limit}&keyword=${keyword}`)
 }
 
-export const useGetAcadimies = (currentPage) => {
- 
-  return useQuery(['academies',currentPage], () => getAcadimies(currentPage))
+export const useGetAcademies = (currentPage=1,limit=4,keyword="") => {
+  return useQuery(['academies',currentPage,limit,keyword], () => getAcademies(currentPage,limit,keyword))
 }
 
 // get academy details
@@ -20,7 +20,6 @@ const getAcademyDetails = async (academyId) => {
 }
 
 export const useGetAcademyDetails = (academyId) => {
- 
   return useQuery(['academy', academyId], () => getAcademyDetails(academyId))
 }
 
@@ -33,8 +32,7 @@ const getAcademyCourses = async (academyId) => {
 }
 
 export const useGetAcademyCourses = (academyId) => {
- 
-  return useQuery(['courses', academyId], () => getAcademyCourses(academyId))
+  return useQuery(['academyCourses', academyId], () => getAcademyCourses(academyId))
 }
 
 // post academy
@@ -49,9 +47,16 @@ export const postAcademy = async (academyData) => {
 }
 
 export const usePostAcademy = () => {
+  const toast = useToast();
 const navigate = useNavigate();
 return useMutation(postAcademy,{
   onSuccess: (data) => {
+    toast({
+      title: "Academy Added Successfully",
+      status: "success",
+      duration: 3000, // Duration in milliseconds
+      isClosable: true,
+    })
     navigate("/");
   },
 })
@@ -70,10 +75,18 @@ export const updateAcademy = async (academyData) => {
 }
 
 export const useUpdateAcademy = () => {
+  const toast = useToast();
 const navigate = useNavigate();
 return useMutation(updateAcademy,{
   onSuccess: (data) => {
-    navigate("/");
+    navigate(`/academydetails/${data.data.data._id}`);
+    toast({
+      title: "Academy Updated Successfully",
+      status: "success",
+      duration: 3000, // Duration in milliseconds
+      isClosable: true,
+    })
+
   },
 })
 }
@@ -91,9 +104,16 @@ export const deleteAcademy = async (academyId) => {
 }
 
 export const useDeleteAcademy = () => {
+  const toast = useToast();
   const navigate = useNavigate();
 return useMutation(deleteAcademy,{
   onSuccess: (data) => {
+    toast({
+      title: "Academy Deleted Successfully",
+      status: "success",
+      duration: 3000, // Duration in milliseconds
+      isClosable: true,
+    })
     navigate("/");
   },
 })
