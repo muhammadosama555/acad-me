@@ -60,6 +60,9 @@ exports.addReview=asyncHandler(async(req,res,next)=>{
 
   const review=await Review.create(req.body)
 
+  // Calculate average rating after adding a new review
+await bootcamp.calculateAverageRating();
+
   res.status(201).json({
     success:true,
     data: review
@@ -73,6 +76,8 @@ exports.addReview=asyncHandler(async(req,res,next)=>{
 exports.updateReview=asyncHandler(async(req,res,next)=>{
   
   let review=await Review.findById(req.params.id)
+
+  const bootcamp=await Bootcamp.findById(req.params.bootcampId)
 
   if(!review){
     return next(new ErrorResponse('no review found with given id',404))
@@ -90,7 +95,8 @@ exports.updateReview=asyncHandler(async(req,res,next)=>{
     runValidators:true
   })
 
-  
+  // Calculate average rating after updating the review
+  await bootcamp.calculateAverageRating();
 
   res.status(201).json({
     success:true,

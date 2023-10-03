@@ -1,12 +1,14 @@
-import { useToast } from "@chakra-ui/react"
+import { toast } from "react-toastify";
 import axios from "axios"
 import { useMutation, useQuery } from "react-query"
 import { useQueryClient } from 'react-query'
+import { API_BASE_URL } from "../config";
+import { store } from "../redux/store";
 
 // get view by academyId
 
 const getReviewByAcademyId = async (academyId) => {
-    return await axios.get(`/api/v1/bootcamps/${academyId}/reviews`)
+    return await axios.get(`${API_BASE_URL}/bootcamps/${academyId}/reviews`)
   }
   
   export const useGetReviewByAcademyId  = (academyId) => {
@@ -18,25 +20,20 @@ const getReviewByAcademyId = async (academyId) => {
 
 export const postReview = async (reviewData) => {
     console.log(reviewData)
-    const user = JSON.parse(localStorage.getItem("user")) || null
-    return axios.post(`/api/v1/bootcamps/${reviewData.bootcampId}/reviews`, reviewData,{
+    const currentUser = store.getState().userSlice.currentUser;
+    const token = currentUser ? currentUser.token : null;
+    return axios.post(`${API_BASE_URL}/bootcamps/${reviewData.bootcampId}/reviews`, reviewData,{
       headers:{
-        'authorization':"Bearer "+ user.token
+        'authorization':"Bearer "+ token
       }
     });
   }
   
   export const usePostReview = () => {
-    const toast = useToast();
     const queryClient = useQueryClient()
   return useMutation(postReview,{
     onSuccess: (data) => {
-      toast({
-        title: "Review Added Successfully",
-        status: "success",
-        duration: 3000, // Duration in milliseconds
-        isClosable: true,
-      })
+      toast.success('Review Added Sucessfully!');
         queryClient.invalidateQueries('review');
     },
   })

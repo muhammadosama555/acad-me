@@ -1,6 +1,6 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { usePostAcademy } from "../apiCalls/academyApiCalls";
-import { Spinner } from "@chakra-ui/react";
+import Loader from '../components/Loader';
 
 const ListAcademy = () => {
 
@@ -14,13 +14,17 @@ const jobAssistanceInputElement = useRef();
 const jobGuranteeInputElement = useRef();
 const acceptGiInputElement = useRef();
 const addressInputElement = useRef();
+const imageInputElement = useRef();
+
+
   
 const { mutate:postAcademyMutate, isLoading:isPostAcademyLoading, isError:isPostAcademyError, error:postAcademyError } = usePostAcademy();
 
   
 if (isPostAcademyLoading) {
-  return <Spinner />
+  return <Loader/>
 }
+
 
 
 const handleSubmit = (event) => {
@@ -36,6 +40,7 @@ const handleSubmit = (event) => {
     jobAssistance: jobAssistanceInputElement.current?.checked,
     jobGurantee: jobGuranteeInputElement.current?.checked,
     acceptGi: acceptGiInputElement.current?.checked,
+    image: imageInputElement.current?.files[0],
   };
   postAcademyMutate( data );
   console.log(data)
@@ -47,7 +52,7 @@ const handleSubmit = (event) => {
     <div className="flex justify-center">
         <div className="flex flex-col w-[600px] mt-20 shadow-lg py-10 mx-8 px-5 lg:px-10 xl:px-10">
             <h1 className="text-2xl font-bold text-center pb-8">List Academy</h1>
-            <form action="" className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
+            <form enctype="multipart/form-data" className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-2">
                     <label className="text-xl font-semibold" for="name">Name:</label>
                     <input
@@ -134,6 +139,17 @@ const handleSubmit = (event) => {
                      ref={addressInputElement}
                       />
                 </div>
+                <div className="flex flex-col gap-2">
+               
+                    <input
+                type="file"
+                id="file"
+                accept="image/*"
+                ref={imageInputElement}
+                name="image"
+              />
+                </div>
+                
                 {isPostAcademyError &&
                 <div>
                   <p className='text-red-600'>{postAcademyError.response.data.error}</p>
@@ -147,65 +163,6 @@ const handleSubmit = (event) => {
     </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    {/* <form onSubmit={handleSubmit}>
-    <label htmlFor="name">Name</label>
-    <input
-      type="text"
-      name="name"
-      ref={nameInputElement}
-      required
-    />
-    <label htmlFor="description">Description</label>
-    <input
-      type="text"
-      name="description"
-      ref={descriptionInputElement}
-      required
-    />
-    <label htmlFor="website">website</label>
-    <input
-      type="text"
-      name="website"
-      ref={websiteInputElement}
-      required
-    />
-    <label htmlFor="phone">phone</label>
-    <input
-      type="number"
-      name="phone"
-      ref={phoneInputElement}
-      required
-    />
-    <label htmlFor="email">Email</label>
-    <input
-      type="email"
-      name="email"
-      ref={emailInputElement}
-      required
-    />
-    <label htmlFor="address">Address</label>
-    <input
-      type="text"
-      name="address"
-      ref={addressInputElement}
-      required
-    />
-   <button type="submit">ListAcademy</button>
-  </form> */}
   </>
   )
 }

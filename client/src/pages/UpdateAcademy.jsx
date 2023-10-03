@@ -1,10 +1,10 @@
-import { Spinner } from "@chakra-ui/react";
 import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetAcademyDetails,
   useUpdateAcademy,
 } from "../apiCalls/academyApiCalls";
+import Loader from "../components/Loader";
 
 const UpdateAcademy = () => {
   const nameInputElement = useRef();
@@ -24,11 +24,11 @@ const UpdateAcademy = () => {
   const { isLoading:isAcademyLoading, data:academyDetails } = useGetAcademyDetails(academyId);
 
   if (isAcademyLoading) {
-    return <Spinner />
+    return <Loader/>
   }
 
   if (isUpdateAcademyLoading) {
-    return <Spinner />
+    return <Loader/>
   }
 
 

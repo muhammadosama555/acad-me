@@ -1,22 +1,29 @@
 import { useMutation, useQuery} from 'react-query'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useToast } from '@chakra-ui/react'
+import { toast } from "react-toastify";
+import { API_BASE_URL } from "../config";
+import { store } from "../redux/store";
+
 
 // get academies
 
-const getAcademies = async (currentPage,limit,keyword) => {
-  return await axios.get(`/api/v1/bootcamps?page=${currentPage}&limit=${limit}&keyword=${keyword}`)
+const getAcademies = async (currentPage=1,limit=4,search="",careers=[],sort="",maxRating=5) => {
+   // Convert the careers array to a formatted string
+  const formattedCareers = careers.map(career => `"${career}"`).join(',');
+   const url = `${API_BASE_URL}/bootcamps?page=${currentPage}&limit=${limit}&search=${search}&careers=[${formattedCareers}]&sort=${sort}&maxRating=${maxRating}`;
+   console.log(url); // Log the URL before making the request
+  return await axios.get(url)
 }
 
-export const useGetAcademies = (currentPage=1,limit=4,keyword="") => {
-  return useQuery(['academies',currentPage,limit,keyword], () => getAcademies(currentPage,limit,keyword))
+export const useGetAcademies = (currentPage,limit,search,careers,sort,maxRating) => {
+  return useQuery(['academies',currentPage,limit,search,careers,sort,maxRating], () => getAcademies(currentPage,limit,search,careers,sort,maxRating))
 }
 
 // get academy details
 
 const getAcademyDetails = async (academyId) => {
-  return await axios.get(`/api/v1/bootcamps/${academyId}`)
+  return await axios.get(`${API_BASE_URL}/bootcamps/${academyId}`)
 }
 
 export const useGetAcademyDetails = (academyId) => {
@@ -28,7 +35,7 @@ export const useGetAcademyDetails = (academyId) => {
 // get academy courses
 
 const getAcademyCourses = async (academyId) => {
-  return await axios.get(`/api/v1/bootcamps/${academyId}/courses`)
+  return await axios.get(`${API_BASE_URL}/bootcamps/${academyId}/courses`)
 }
 
 export const useGetAcademyCourses = (academyId) => {
@@ -38,25 +45,21 @@ export const useGetAcademyCourses = (academyId) => {
 // post academy
 
 export const postAcademy = async (academyData) => {
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.post("/api/v1/bootcamps", academyData,{
-    headers:{
-      'authorization':"Bearer "+ user.token
-    }
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.post(`${API_BASE_URL}/bootcamps`, academyData, {
+    headers: {
+      'authorization': "Bearer " + token,
+      "Content-Type": "multipart/form-data",
+    },
   });
 }
 
 export const usePostAcademy = () => {
-  const toast = useToast();
 const navigate = useNavigate();
 return useMutation(postAcademy,{
   onSuccess: (data) => {
-    toast({
-      title: "Academy Added Successfully",
-      status: "success",
-      duration: 3000, // Duration in milliseconds
-      isClosable: true,
-    })
+    toast.success('Academy Added Sucessfully!');
     navigate("/");
   },
 })
@@ -66,26 +69,21 @@ return useMutation(postAcademy,{
 
 export const updateAcademy = async (academyData) => {
   console.log(academyData)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.put(`/api/v1/bootcamps/${academyData.academyId}`, academyData,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.put(`${API_BASE_URL}/bootcamps/${academyData.academyId}`, academyData,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
 
 export const useUpdateAcademy = () => {
-  const toast = useToast();
 const navigate = useNavigate();
 return useMutation(updateAcademy,{
   onSuccess: (data) => {
     navigate(`/academydetails/${data.data.data._id}`);
-    toast({
-      title: "Academy Updated Successfully",
-      status: "success",
-      duration: 3000, // Duration in milliseconds
-      isClosable: true,
-    })
+    toast.success('Academy Updated Sucessfully!');
 
   },
 })
@@ -95,25 +93,20 @@ return useMutation(updateAcademy,{
 
 export const deleteAcademy = async (academyId) => {
   console.log(academyId)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.delete(`/api/v1/bootcamps/${academyId}`,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.delete(`${API_BASE_URL}/bootcamps/${academyId}`,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
 
 export const useDeleteAcademy = () => {
-  const toast = useToast();
   const navigate = useNavigate();
 return useMutation(deleteAcademy,{
   onSuccess: (data) => {
-    toast({
-      title: "Academy Deleted Successfully",
-      status: "success",
-      duration: 3000, // Duration in milliseconds
-      isClosable: true,
-    })
+    toast.success('Academy Deleted Sucessfully!');
     navigate("/");
   },
 })

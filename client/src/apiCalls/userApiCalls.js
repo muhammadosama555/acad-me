@@ -1,29 +1,28 @@
-import { useToast } from "@chakra-ui/react";
+import { toast } from "react-toastify";
 import axios from "axios"
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-
+import { API_BASE_URL } from "../config";
+import { loginSuccess, logoutSuccess } from "../redux/reducers/userReducers ";
+import { persistor } from "../redux/store";
+import { useDispatch } from "react-redux";
+console.log(toast)
 
 
 // User to login
 
 export const login = async (userData) => {
-    return axios.post("/api/v1/auth/login", userData);
+    return axios.post(`${API_BASE_URL}/auth/login`, userData);
   }
 
 export const useLogin = () => {
-  const toast = useToast();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return useMutation(login,{
     onSuccess: (data) => {
       console.log(data)
-      localStorage.setItem("user",JSON.stringify(data?.data))
-      toast({
-        title: "login Successfully",
-        status: "success",
-        duration: 3000, // Duration in milliseconds
-        isClosable: true,
-      })
+      dispatch(loginSuccess(data.data));
+      toast.success('Login Sucessfully!');
       navigate("/");
     },
   })
@@ -32,20 +31,14 @@ export const useLogin = () => {
 // User to Register
 
 export const register = async (userData) => {
-    return axios.post("/api/v1/auth/register", userData);
+    return axios.post(`${API_BASE_URL}/auth/register`, userData);
   }
 
 export const useRegister = () => {
-  const toast = useToast();
   const navigate = useNavigate();
   return useMutation(register,{
     onSuccess: (data) => {
-      toast({
-        title: `account created Successfully`,
-        status: "success",
-        duration: 3000, // Duration in milliseconds
-        isClosable: true,
-      })
+      toast.success('Account Created Sucessfully!');
       navigate("/login");
     },
   })
@@ -54,13 +47,17 @@ export const useRegister = () => {
 // User to logout
 
 export const logout = async () => {
-  return axios.get("/api/v1/auth/logout");
+  return axios.get(`${API_BASE_URL}/auth/logout`);
 }
 
 export const useLogout = () => {
 const navigate = useNavigate();
+const dispatch = useDispatch();
 return useMutation(logout,{
   onSuccess: (data) => {
+    dispatch(logoutSuccess());
+    toast.success('Logout Sucessfully!');
+    persistor.purge();
     navigate("/");
   },
 })

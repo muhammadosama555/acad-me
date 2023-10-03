@@ -1,6 +1,6 @@
-import { Spinner } from '@chakra-ui/react';
 import React, { useRef } from 'react'
 import { useRegister } from '../apiCalls/userApiCalls';
+import Loader from '../components/Loader';
 
 const Register = () => {
     
@@ -13,7 +13,7 @@ const Register = () => {
 
   
     if (isRegisterLoading) {
-      return <Spinner />
+      return <Loader/>
     }
   
   

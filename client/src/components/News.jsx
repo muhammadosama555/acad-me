@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const News = () => {
   return (
@@ -7,7 +8,9 @@ const News = () => {
         <div className="absolute space-y-5 lg:space-y-8 xl:space-y-10 top-[35%] mr-auto ml-auto w-full text-center">
             <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl pt-10 text-center font-semibold">Do you want to be a student?</h1>
             <div className="">
+              <Link to='/SearchAcademies'>
                 <button className="px-8 py-3 text-sm lg:text-lg xl:text-lg text-white font-semibold rounded-lg bg-[#4a4cc7] hover:bg-[#4647ab]">View More</button>
+                </Link>
             </div>
         </div>
     </div>

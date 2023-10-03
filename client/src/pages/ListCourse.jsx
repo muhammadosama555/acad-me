@@ -1,7 +1,7 @@
-import { Spinner } from '@chakra-ui/react';
 import React, { useRef } from 'react'
 import { useParams } from 'react-router-dom';
 import { usePostCourse } from '../apiCalls/courseApiCalls';
+import Loader from '../components/Loader';
 
 const ListCourse = () => {
 
@@ -20,7 +20,7 @@ const ListCourse = () => {
     
       
     if (isPostCourseLoading) {
-      return <Spinner/>
+      return <Loader/>
     }
     
     

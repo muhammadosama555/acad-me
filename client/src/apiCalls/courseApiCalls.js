@@ -1,22 +1,24 @@
 import { useMutation, useQuery } from 'react-query'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useToast } from "@chakra-ui/react";
+import { toast } from "react-toastify";
+import { API_BASE_URL } from "../config";
+import { store } from "../redux/store";
 
 // get courses
 
-const getCourses = async (keyword) => {
-  return await axios.get(`/api/v1/courses?keyword=${keyword}`)
+const getCourses = async (search="",sort="",page=1,limit=5) => {
+  return await axios.get(`${API_BASE_URL}/courses?search=${search}&sort=${sort}&page=${page}&limit=${limit}`)
 }
 
-export const useGetCourses = (keyword) => {
-  return useQuery(['courses',keyword], () => getCourses(keyword))
+export const useGetCourses = (search,sort,page,limit) => {
+  return useQuery(['courses',search,sort,page,limit], () => getCourses(search,sort,page,limit))
 }
 
 // get course details
 
 const getCourseDetails = async (courseId) => {
-  return await axios.get(`/api/v1/courses/${courseId}`)
+  return await axios.get(`${API_BASE_URL}/courses/${courseId}`)
 }
 
 export const useGetCourseDetails = (courseId) => {
@@ -27,25 +29,20 @@ export const useGetCourseDetails = (courseId) => {
 // post course
 
 export const postCourse = async (courseData) => {
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.post("/api/v1/courses", courseData,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.post(`${API_BASE_URL}/courses`, courseData,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
 
 export const usePostCourse = () => {
 const navigate = useNavigate();
-const toast = useToast();
 return useMutation(postCourse,{
   onSuccess: (data) => {
-    toast({
-      title: "Course Added Successfully",
-      status: "success",
-      duration: 3000, // Duration in milliseconds
-      isClosable: true,
-    })
+    toast.success('Course Added Sucessfully!');
     console.log(data.data.data.bootcamp)
     navigate(`/academydetails/${data.data.data.bootcamp}`)
     
@@ -58,25 +55,20 @@ return useMutation(postCourse,{
 
 export const updateCourse = async (courseData) => {
   console.log(courseData)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.put(`/api/v1/courses/${courseData.courseId}`, courseData,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.put(`${API_BASE_URL}/courses/${courseData.courseId}`, courseData,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
 
 export const useUpdateCourse = () => {
-  const toast = useToast();
   const navigate = useNavigate();
 return useMutation(updateCourse,{
   onSuccess: (data) => {
-      toast({
-        title: "Course Updated Successfully",
-        status: "success",
-        duration: 3000, // Duration in milliseconds
-        isClosable: true,
-      })
+    toast.success('Course Updated Sucessfully!');
     navigate(`/coursedetails/${data.data.data._id}/${data.data.data.bootcamp}`);
   },
 })
@@ -86,25 +78,20 @@ return useMutation(updateCourse,{
 
 export const deleteCourse = async (courseId) => {
   console.log(courseId)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.delete(`/api/v1/courses/${courseId}`,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.delete(`${API_BASE_URL}/courses/${courseId}`,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
 
 export const useDeleteCourse = (academyId) => {
-  const toast = useToast();
   const navigate = useNavigate();
 return useMutation(deleteCourse,{
   onSuccess: (data) => {
-    toast({
-      title: "Course Deleted Successfully",
-      status: "success",
-      duration: 3000, // Duration in milliseconds
-      isClosable: true,
-    })
+    toast.success('Course Deleted Sucessfully!');
     navigate(`/academydetails/${academyId}`);
   },
 })

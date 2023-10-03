@@ -25,9 +25,7 @@ const AboutUs = () => {
                     <p className=" font-semibold">Our content will help you in every step.</p>
                 </div>
             </div>
-            <div className="text-center lg:text-start xl:text-start pb-10">
-                <button className="px-8 py-3 text-sm lg:text-lg xl:text-lg text-white font-semibold rounded-lg bg-[#4a4cc7] hover:bg-[#4647ab]">View More</button>
-            </div>
+         
         </div>
         <div className="secured absolute bottom-96 lg:bottom-10 xl:bottom-14 right-0 left-0 lg:left-10 xl:left-10 mr-auto ml-auto bg-white w-64 px-5 pt-4">
             <div className="h-10 w-10 flex justify-center items-center rounded-full bg-[#e4fffb]">

@@ -10,6 +10,10 @@ const BootcampSchema=mongoose.Schema({
         unique:true,
         trim:true
     },
+    imageUrl: {
+      type: String,
+      default: null,
+    },
     slug: String,
 
     description:{
@@ -70,6 +74,7 @@ const BootcampSchema=mongoose.Schema({
       },
       averageRating: {
         type:Number,
+        default: 0,
         min: [1,'Rating must me atleast 1'],
         max: [5,'Rating must me below 6'],
       },
@@ -121,7 +126,6 @@ BootcampSchema.pre('save', function(next){
 
 //geocoder and getting the location
 BootcampSchema.pre('save',async function (next){
-console.log(geocoder);
    const loc = await geocoder.geocode(this.address)
    this.location={
     type: 'Point',
@@ -135,8 +139,7 @@ console.log(geocoder);
    }
 
    //do not save address in db
-   this.address=undefined
-
+   //this.address=loc[0].formattedAddress
 
   next()
 })
@@ -156,5 +159,22 @@ BootcampSchema.virtual('courses',{
   foreignField: 'bootcamp',
   justOne: false 
 })
+
+// Add this method to your BootcampSchema
+BootcampSchema.methods.calculateAverageRating = async function () {
+  const reviews = await mongoose.model('Review').find({ bootcamp: this._id });
+
+  console.log(reviews);
+  if (reviews.length === 0) {
+    this.averageRating = 0;
+  } else {
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    console.log(totalRating);
+    this.averageRating = totalRating / reviews.length;
+  }
+
+  await this.save();
+};
+
 
 module.exports=mongoose.model('Bootcamp',BootcampSchema)

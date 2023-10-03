@@ -1,9 +1,10 @@
-import { Spinner } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDeleteAcademy, useGetAcademyCourses, useGetAcademyDetails } from '../apiCalls/academyApiCalls'
 import { useGetReviewByAcademyId, usePostReview } from '../apiCalls/reviewApiCalls'
 import normalDate from '../utils'
+import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
 
 
 const AcademyDetails = () => {
@@ -14,7 +15,7 @@ const AcademyDetails = () => {
   const [text, setText] = useState("");
 
 
-    const user = JSON.parse(localStorage.getItem("user")) || null  
+  const { currentUser } = useSelector((state) => state.userSlice);
     const { academyId } = useParams()
     const { isLoading:isAcademyLoading, data:academyDetails } = useGetAcademyDetails(academyId)
     const { isLoading:isCoursesLoading, data:coursesData } = useGetAcademyCourses(academyId)
@@ -23,25 +24,25 @@ const AcademyDetails = () => {
     const { mutate:deleteAcademyMutate, isLoading:isDeleteAcademyLoading } = useDeleteAcademy();
 
     if (isAcademyLoading) {
-      return <Spinner />
+      return <Loader/>
     }
   
     if (isCoursesLoading) {
-      return <Spinner />
+      return <Loader/>
     }
 
     if (isDeleteAcademyLoading ) {
-      return <Spinner />
+      return <Loader/>
     }
   
 
     if (isReviewLoading ) {
-      return <Spinner />
+      return <Loader/>
     }
   
 
     if (isPostReviewLoading ) {
-      return <Spinner />
+      return <Loader/>
     }
   
 
@@ -49,7 +50,7 @@ const AcademyDetails = () => {
       deleteAcademyMutate( academyId );
     }
 
-    console.log(review)
+    console.log(academyDetails?.data)
 
   // calculate rating
   const rating = review.data.data.reduce(
@@ -134,7 +135,7 @@ console.log(coursesData)
             </div>
         </div>
 
-        {user?.data.role === "publisher" && user?.data._id ===  academyDetails.data.data.user &&
+        {currentUser?.data.role === "publisher" && currentUser?.data._id ===  academyDetails.data.data.user &&
      (<>
         <div className="flex justify-center mt-5 pb-3 gap-2">
                     <button
@@ -215,7 +216,7 @@ console.log(coursesData)
         </div>
         </>)}
         <div className="reviews">
-        {user?.data.role === "user" &&
+        {currentUser?.data.role === "user" &&
             <button onClick={() => setToogleReview(!toogleReview)} className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl py-10 text-center font-bold"> Add a Review</button>
          }
 
@@ -250,129 +251,43 @@ console.log(coursesData)
                     </div>
                 </div>
                 }
+                  {review.data.data.length > 0 ? 
+                   <>
+                   <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl py-10 text-center font-bold">Reviews</h1>
 
-                <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl py-10 text-center font-bold">Reviews</h1>
-
-                {review.data.data.map(item=>(
-                <div className="review-card flex gap-5 relative border-b pb-5 border-slate-200">
-                    <img className="w-16 h-16 absolute rounded-full" src="images/profile.jpg" alt=""/>
-                    <div className="flex flex-grow flex-col pl-20">
-                        <div className="flex justify-between ">
-                            <h1 className="text-lg">{item.title}</h1>
-                            <h2 className="text-gray-300 text-sm">{normalDate(item.createdAt)}</h2>
-                        </div>
-                        <div className="rating-outer">
-        <div className="rating-inner" style={{width: `${(item.rating/5)*100}%`}}></div>
+{review.data.data.map(item=>(
+<div className="review-card flex gap-5 relative border-b pb-5 border-slate-200">
+    <img className="w-16 h-16 absolute rounded-full" src="images/profile.jpg" alt=""/>
+    <div className="flex flex-grow flex-col pl-20">
+        <div className="flex justify-between ">
+            <h1 className="text-lg">{item.title}</h1>
+            <h2 className="text-gray-300 text-sm">{normalDate(item.createdAt)}</h2>
+        </div>
+        <div className="rating-outer">
+<div className="rating-inner" style={{width: `${(item.rating/5)*100}%`}}></div>
+</div>
+        <p className="font-light text-gray-600 pt-2">{item.text}</p>
     </div>
-                        <p className="font-light text-gray-600 pt-2">{item.text}</p>
-                    </div>
-                </div>
-                ))}
-               
+</div>
+))}
 
-
-                <div className="flex justify-center py-10">
+<div className="flex justify-center py-10">
                     <button
                         className="px-7 py-3 text-base text-gray-700 font-semibold rounded-lg bg-stone-200 hover:bg-stone-300">Load
                         More</button>
                 </div>
+                    </> : null}
+                
+               
+
+
+              
             </div>
         </div>
      
 
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    {/* <div>
-      <div>
-      {user?.data.role === "publisher" && user?.data._id ===  academyDetails.data.data.user &&
-     (<>
-     <Link to={`/listcourse/${academyId}`}>ListCourse</Link>
-     <Link to={`/updateacademy/${academyId}`}>UpdateAcademy</Link>
-     <button onClick={()=>deleteHandler(academyId)}>delete</button>
-     </>
-     )}
-     </div> 
-    {academyDetails && academyDetails.data.data.name}
-    <div>no of views: {review.data.count}</div>
-    <div>
-    <div className="rating-outer">
-        <div className="rating-inner" style={{width: `${(rating/5)*100}%`}}></div>
-    </div>
-    </div>
-    {user?.data.role === "user" &&
-    <div>
-      <button  onClick={() => setToogleReview(!toogleReview)}>Submit Review</button>
-    </div>
-    }
-    {toogleReview &&
-    <div >
-         <h2>Submit Review</h2>
-                    <div className="rating">
-                      {[1, 2, 3, 4, 5].map((value) => (
-                        <span
-                          key={value}
-                          role="button"
-                          onClick={() => setRatings(value)}
-                          onKeyDown={() => setRatings(value)}
-                          tabIndex={0}
-                        >
-                          {ratings >= value ? "⭐️" : "☆"}
-                        </span>
-                      ))}
-                    </div>
-                    <label>Title</label>
-                    <input type="text"  onChange={(e) => setTitle(e.target.value)}/>
-                    <label>Comment</label>
-                    <textarea
-                      name="review"
-                      id="review"
-                      onChange={(e) => setText(e.target.value)}
-                    ></textarea>
-                    <button onClick={submitReview}>
-                      Submit
-                    </button>
-    </div>
-    }
-
-    <div>
-      <h1>your reviews</h1>
-      {review.data.data.map(item=>(
-        <div key={item._id}>
-        <div classNameName="rating-outer">
-        <div classNameName="rating-inner" style={{width: `${(item.rating/5)*100}%`}}></div>
-    </div>
-    
-        <div>
-        {item.title}
-        </div>
-        <div>
-        {item.text}
-        </div>
-        </div>
-      ))}
-    </div>
-
-    {coursesData?.data.data.map((course)=>(
-        <div  key={course._id}>{
-       <Link to={`/coursedetails/${course._id}`}>{course.title}</Link>}</div>
-
-      ))}
-    </div> */}
     </>
   )
 }

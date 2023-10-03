@@ -1,22 +1,23 @@
-import { Spinner } from '@chakra-ui/react'
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDeleteCourse, useGetCourseDetails } from '../apiCalls/courseApiCalls'
+import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
 
 const CourseDetails = () => {
 
-    const user = JSON.parse(localStorage.getItem("user")) || null    
+    const { currentUser } = useSelector((state) => state.userSlice);  
     const { courseId,academyId } = useParams()
     const {isLoading,data} = useGetCourseDetails(courseId)
     const { mutate:deleteCourseMutate, isLoading:isDeleteCourseLoading } = useDeleteCourse(academyId);
 
     if (isLoading) {
-        return <Spinner />
+        return <Loader/>
       }
       
 
     if (isDeleteCourseLoading) {
-        return <Spinner />
+        return <Loader/>
       }
       
 
@@ -65,7 +66,7 @@ const CourseDetails = () => {
            
            
                  </div>
-                 {user?.data.role === "publisher" && 
+                 {currentUser?.data.role === "publisher" && 
      (<>
             <div className="flex justify-center mt-5 pb-3 gap-2">
                     <button

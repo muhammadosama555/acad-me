@@ -3,7 +3,6 @@ const { getAllUser, getSingleUser, createUser, updateUser, deleteUser } = requir
 
 
 const User=require('../models/User')
-const advanceResults = require('../middlewares/advanceResults')
 const { protect, authorize } = require('../middlewares/auth')
 
 const router= express.Router({mergeParams: true})
@@ -11,7 +10,7 @@ const router= express.Router({mergeParams: true})
 router.use(protect)
 router.use(authorize('admin'))
 
-router.get('/',advanceResults(User),getAllUser)
+router.get('/',getAllUser)
 router.get('/:id',getSingleUser)
 router.post('/',protect,createUser)
 router.put('/:id',updateUser)

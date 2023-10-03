@@ -9,23 +9,71 @@ const Bootcamp = require('../models/Bootcamp.js')
 //route    GET   /api/v1/bootcamps
 //access   public
 
-exports.getCourses=asyncHandler(async(req,res,next)=>{
-    let query
+exports.getCourses = asyncHandler(async (req, res, next) => {
+  const page = req.query.page;
+  const limit = req.query.limit;
+  const sort = req.query.sort;
+  const search = req.query.search;
 
-    if(req.params.bootcampId){
-        query=Course.find({bootcamp:req.params.bootcampId})
-    }else{
-        query=Course.find()
-    }
+  // Pagination options
+  const parsedPage = parseInt(page, 10) || 1;
+  const parsedLimit = parseInt(limit, 10) || 5;
+  const skip = (parsedPage - 1) * parsedLimit;
 
-    const courses= await query
+  let sortOptions = {};
+  
+  if (sort === 'title') {
+    sortOptions.title = 1;
+  } else if (sort === '-title') {
+    sortOptions.title = -1;
+  } else if (sort === 'tuition') {
+    sortOptions.tuition = 1;
+  } else if (sort === '-tuition') {
+    sortOptions.tuition = -1;
+  }
 
-    res.status(200).json({
-        success:true,
-        count: courses.length,
-        data:courses
-    })
-})
+  // Search by title
+  const searchQuery = search ? { title: { $regex: search, $options: 'i' } } : {};
+
+  // Build the query
+  const query = Course.find({ ...searchQuery })
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(limit);
+
+  // Execute the query
+  const courses = await query;
+
+  // Get total count of courses for pagination
+  const totalCount = await Course.countDocuments({ ...searchQuery });
+  const totalPages = Math.ceil(totalCount / parsedLimit);
+
+  // Pagination result
+  const pagination = {};
+  if (skip > 0) {
+    pagination.prev = {
+      page: parsedPage - 1,
+      limit: parsedLimit,
+    };
+  }
+
+  if (skip + parsedLimit < totalCount) {
+    pagination.next = {
+      page: parsedPage + 1,
+      limit: parsedLimit,
+    };
+  }
+
+  res.status(200).json({
+    success: true,
+    pagination,
+    totalCount,
+    totalPages,
+    data: courses,
+  });
+});
+
+  
 // get single Courses
 //route    GET   /api/v1/courses/id
 //access   public
@@ -82,6 +130,9 @@ exports.postNewCourse=asyncHandler(async(req,res,next)=>{
         data:course
     })
 })
+
+
+
 // Update single Courses
 //route    PUT   /api/v1/courses/id
 //access   private
@@ -111,6 +162,9 @@ exports.updateCourse=asyncHandler(async(req,res,next)=>{
         data:course
     })
 })
+
+
+
 // Delete single Courses
 //route    DELETE   /api/v1/courses/id
 //access   private
@@ -128,7 +182,7 @@ exports.deleteCourse=asyncHandler(async(req,res,next)=>{
         //Make sure user is course owner 
   if(course.user.toString() !==req.user.id && req.user.role !== 'admin'){
     return next(
-      new ErrorResponse('user id is not authorized to delete course',400)
+      new errorResponse('user id is not authorized to delete course',400)
     )
   }
 

@@ -1,19 +1,86 @@
 const path =require('path')
-const errorResponse= require("../utils/errorResponse.js")
+const ErrorResponse= require("../utils/errorResponse.js")
 const asyncHandler=require('../middlewares/async.js')
 const Bootcamp = require('../models/Bootcamp.js')
 const { geoSearch } = require("../models/Bootcamp.js")
 const geocoder = require("../utils/geocoder.js")
-const ErrorResponse = require('../utils/errorResponse.js')
+const jwt = require('jsonwebtoken');
+const cloudinary = require("../config/cloudinary.js");
+const sharp = require("sharp");
 
 
 // get all bootcamps
 //route    GET   /api/v1/bootcamps
 //access   public
-exports.getBootcamps=asyncHandler(async(req,res,next)=>{
 
-  res.status(201).json(res.advanceResults)
-})
+exports.getBootcamps = asyncHandler(async (req, res, next) => {
+  const page = req.query.page
+  const limit = req.query.limit
+  const maxRating = req.query.maxRating; 
+  const careers = req.query.careers ? JSON.parse(req.query.careers) : [];
+  // Pagination options
+  const parsedPage = parseInt(page, 10) || 1;
+  const parsedLimit = parseInt(limit, 5) || 5;
+  const skip = (parsedPage - 1) * parsedLimit;
+  
+
+  let sortOptions = {};
+  const sort = req.query.sort
+
+  if (sort === "name") {
+    sortOptions.name = 1;
+  } else if (sort === "-name") {
+    sortOptions.name = -1;
+  } 
+
+  // Search by name
+  const searchQuery = req.query.search ? { name: { $regex: req.query.search, $options: 'i' } } : {};
+
+
+  // Search by careers (if provided)
+  const careersQuery = careers.length > 0 ? { careers: { $in: careers } } : {};
+
+
+  const ratingQuery = maxRating ? { averageRating: { $lte: parseFloat(maxRating) }} : {}
+  // Build the query
+  const query = Bootcamp.find({ ...searchQuery,...careersQuery,...ratingQuery })
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(limit);
+
+  // Execute the query
+  const bootcamps = await query;
+
+  // Get total count of bootcamps for pagination
+  const totalCount = await Bootcamp.countDocuments({ ...searchQuery, ...careersQuery, ...ratingQuery });
+  const totalPages = Math.ceil(totalCount / parsedLimit);
+
+  
+  // Pagination result
+  const pagination = {};
+  if (skip > 0) {
+    pagination.prev = {
+      page: parsedPage - 1,
+      limit: parsedLimit,
+    };
+  }
+
+  if (skip + parsedLimit < totalCount) {
+    pagination.next = {
+      page: parsedPage + 1,
+      limit: parsedLimit,
+    };
+  }
+
+  res.status(200).json({
+    success: true,
+    pagination,
+    totalCount,
+    totalPages,
+    data: bootcamps,
+  });
+});
+
 
 //desc     Get single bootcamps
 //route    GET   /api/v1/bootcamps/:id
@@ -41,23 +108,66 @@ exports.getSingleBootcamps=asyncHandler( async(req,res,next)=>{
 //access   private
 exports.postBootcamps=asyncHandler( async(req,res,next)=>{
     
-    //Add user to req.body
-    req.body.user= req.user.id
+   // Get the authorization header from the request
+  const authHeader = req.headers.authorization;
+
+  // If the authorization header doesn't exist, return an error
+  if (!authHeader) {
+    return next(new ErrorResponse('Authorization header missing', 401));
+  }
+ 
+  // Extract the token from the authorization header
+  const token = authHeader.split(' ')[1];
+
+  // Verify the token to get the user ID
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decodedToken.id;
+
+  let imageUrl;
+
+  // Check if an image file is included in the request
+  if (req.file) {
+    const processedImage = await sharp(req.file.buffer)
+      .resize(500, 500)
+      .jpeg({ quality: 70 })
+      .toBuffer();
+
+    // Convert the buffer to a data URI
+    const dataURI = `data:image/jpeg;base64,${processedImage.toString("base64")}`;
+    
+    const result = await cloudinary.uploader.upload(dataURI, {
+      resource_type: "image",
+      format: "jpg",
+      public_id: `${userId}_${Date.now()}`,
+    });
+
+    imageUrl = result.secure_url;
+  }
+
+  
     
     //Check for published bootcamps
-    const publishBootcamp= await Bootcamp.findOne({user: req.user.id})
+    const publishBootcamp= await Bootcamp.findOne({user: userId})
     // If the user is not an admin they can only add one bootcamp
     if(publishBootcamp && req.user.role !== 'admin'){
      
       return next(new ErrorResponse('user with this id has already published bootcamp',400))
 
     }
-    const bootcamp= await Bootcamp.create(req.body)
+    // Create a new academy object with the imageUrl and user ID
+  const bootcamp = new Bootcamp({
+    imageUrl: imageUrl,
+    user: userId, // Set the user field to the userId
+  });
 
-    res.status(201).json({
-      success:true,
-      data:bootcamp
-    })
+  // Save the new academy to the database
+  const savedBootcamp = await bootcamp.save();
+
+  // Return the new academy as the response
+  res.status(201).json({
+    success: true,
+    data: savedBootcamp,
+  });
  
 })
 
@@ -93,11 +203,6 @@ exports.updateBootcamps=asyncHandler( async(req,res,next)=>{
 
         })
       
-    
-  
-
-   
-
 
 })
 
@@ -107,7 +212,7 @@ exports.updateBootcamps=asyncHandler( async(req,res,next)=>{
 exports.deleteBootcamps=asyncHandler( async(req,res,next)=>{
 
  
-    const bootcamp= await Bootcamp.findById(req.params.id)
+    const bootcamp = await Bootcamp.findById(req.params.id)
 
     if (!bootcamp) {
       return next(
@@ -164,57 +269,3 @@ exports.getBootcampsInRadius=asyncHandler( async(req,res,next)=>{
 })
 
 
-
-//Upload photo bootcamps
-//route    PUT  /api/v1/bootcamps/:id/photo
-//access   delete
-exports.bootcampPhotoUpload=asyncHandler( async(req,res,next)=>{
-
- 
-  const bootcamp= await Bootcamp.findById(req.params.id)
-
-  if (!bootcamp) {
-  return next(
-    new errorResponse("bootcamp not found with thne given id",404)
-  )
-}
-
-if(!req.files){
-  return next(
-    new errorResponse("please upload file",404)
-  )
-}
- 
-const file = req.files.file
-
-//Make sure the image is photo
-if(!file.mimetype.startsWith('image')){
-  return next(new errorResponse(`Please upload a image`,400))
-}
-
-//Check filesize
-if(file.size>process.env.MAX_FILE_UPLOAD){
-  return next(new errorResponse(`please upload image less than
-  ${process.env.MAX_FILE_UPLOAD}`))
-}
-
-
-//Create custom filename
-file.name=`photo_${bootcamp._id}${path.parse(file.name).ext}`
-
-file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`,async err =>{
-  if(err){
-    return next(new errorResponse(`problem with upload`,500))
-  }
-  
-  await Bootcamp.findByIdAndUpdate(req.params.id, {photo: file.name})
-
-res.status(200).json({
-  success:true,
-  data: file.name
-})
-
-})
-
-
-})

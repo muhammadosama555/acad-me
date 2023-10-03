@@ -15,6 +15,9 @@ import UpdateAcademy from './pages/UpdateAcademy';
 import UpdateCourse from './pages/UpdateCourse';
 import SearchAcademies from './pages/SearchAcademies';
 import SearchCourses from './pages/SearchCourses';
+import { ScrollToTop } from "./hooks/ScrollToTop";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient()
 
@@ -24,6 +27,7 @@ function App() {
     <div className="relative lg:mx-14 xl:mx-32">
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
+    <ScrollToTop />
     <Navbar />
     <Routes>
     <Route path='/' element={<Home/>}/>
@@ -38,7 +42,19 @@ function App() {
     <Route path='/searchacademies' element={<SearchAcademies/>}/>
     <Route path='/searchcourses' element={<SearchCourses/>}/>
     </Routes>
+    <div id='contactUs'>
     <Footer />
+    </div>
+    <ToastContainer
+          autoClose={3000}
+          draggable={false}
+          position="top-right"
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnHover
+        />
     </BrowserRouter>
     <ReactQueryDevtools intialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>

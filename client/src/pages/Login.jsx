@@ -1,17 +1,16 @@
-import { Spinner } from "@chakra-ui/react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLogin } from "../apiCalls/userApiCalls";
+import Loader from "../components/Loader";
 
 const Login = () => {
   const emailInputElement = useRef();
   const passwordInputElement = useRef();
-
   const { mutate:loginMutate, isLoading:isLoginLoading, isError:isLoginError, error:loginError } = useLogin();
 
   
   if (isLoginLoading) {
-    return <Spinner />
+    return <Loader/>
   }
 
 

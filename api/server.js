@@ -17,6 +17,7 @@ const morgan= require("morgan")
 const fileupload = require('express-fileupload')
 const cookieParser=require('cookie-parser')
 const errorHandler=require("./middlewares/error.js")
+const cors = require("cors");
 
 
 //db connected
@@ -45,6 +46,8 @@ app.use(fileupload())
 //set static folders
 app.use(express.static(path.join(__dirname, 'public')))
 
+//cors
+app.use(cors());
 
 //use routers
 app.use('/api/v1/bootcamps',bootcamps)
