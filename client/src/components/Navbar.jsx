@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useLogout } from '../apiCalls/userApiCalls';
+import { useGetUserDetails, useLogout } from '../apiCalls/userApiCalls';
 import Loader from './Loader';
 import useOutsideClick from '../hooks/useOutsideClick';
 import { useSelector } from 'react-redux';
@@ -9,17 +9,23 @@ import { useSelector } from 'react-redux';
 const Navbar = () => {
 
 const { currentUser } = useSelector((state) => state.userSlice);
-console.log(currentUser?.data)
+const userId = currentUser?.data._id
+
+const { cart } = useSelector((state) => state.cartSlice);
+
 const sidebarRef = useRef();
 
 const [toogleSidebar, setToogleSidebar] = useState(false)
+
 
 useOutsideClick(sidebarRef, () => {
     if (toogleSidebar) setToogleSidebar(false);
   });
 
+const { data:userDetails } = useGetUserDetails(userId)
 const { mutate:logoutMutate, isLoading:isLogoutLoading, isError:isLogoutError, error:logoutError } = useLogout();
 
+const userCart = cart[userId] || [];
 
 if (isLogoutLoading) {
   return <Loader/>
@@ -33,6 +39,7 @@ const handleLogout = () => {
   logoutMutate()
 }
 
+const fallbackImage = "/images/avatar.jpg";
 
 
   return (
@@ -87,11 +94,26 @@ const handleLogout = () => {
                     <i className="text-xl hover:text-yellow-400 fa-solid fa-magnifying-glass"></i>
                 </Link>
                 <div className="relative">
-                    <div className="absolute h-2 w-2 rounded-full -right-1 -top-1"></div>
-                    <a href="">
+                    {userCart.length === 0 ? null :
+                <div className="absolute -right-3 -top-1 rounded-full bg-red-700 text-xs text-white px-1">
+                {userCart.length}
+              </div>}
+                    <Link to="/cart">
                         <i className="text-xl hover:text-yellow-400 fa-solid fa-cart-shopping"></i>
-                    </a>
+                    </Link>
                 </div>
+                {currentUser ? 
+                <Link to="/profile">
+            <div
+              className="w-10 h-10 border border-gray-200  rounded-full"
+              style={{
+                backgroundImage: `url("${userDetails?.data.data.imgUrl}"), url("${fallbackImage}")`,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+              }}
+            ></div>
+            </Link>:null}
             </div>
             <div className="w-[2px] h-10 bg-yellow-200 ml-7 mr-2"></div>
             <div className="hidden lg:flex xl:flex text-center">

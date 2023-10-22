@@ -149,7 +149,7 @@ console.log(coursesData)
                 </>
      )}
 
-        {coursesData.data.count > 0 && (<>
+        {coursesData.data.data.length > 0 && (<>
         <div className="courses">
         <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl py-10 text-center font-bold">Courses</h1>
             <div className="flex flex-wrap gap-10 justify-center mt-10">

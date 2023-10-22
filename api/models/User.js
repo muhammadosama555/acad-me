@@ -18,6 +18,10 @@ const jwt = require('jsonwebtoken')
             'please add valid email'
         ]
     },
+    imgUrl: {
+        type: String,
+        default: null,
+      },
     role:{
         type:String,
         enum:['user','publisher'],
@@ -27,11 +31,14 @@ const jwt = require('jsonwebtoken')
         type:String,
         required:[true,'Please enter a password'],
         select:false,
-        minLength:6
 
     },
-    resetPasswordToken:String,
-    resetPasswordExpire:Date,
+    orders: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: 'Order',
+        },
+      ],
     createdAt: {
         type:Date,
         default:Date.now
@@ -63,22 +70,32 @@ const jwt = require('jsonwebtoken')
     return await bcrypt.compare(enteredPassword,this.password)
  }
 
- //Generate and hash password token
- UserSchema.methods.getResetPasswordToken=function(){
-    //Generate token 
-    const resetToken = crypto.randomBytes(20).toString('hex')
+
+  //Generate and hashPassword token
+  UserSchema.methods.getResetPasswordToken= function(){
+    //Generate Token
+    const resetToken= crypto.randomBytes(20).toString('hex')
 
     //Hash token and set to resetPasswordToken field
-    this.resetPasswordToken= crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex')
+    this.resetPasswordToken= crypto.createHash('sha256').update(resetToken).digest('hex')
 
-
-    //Set expire
-    this.resetPasswordExpire=Date.now()+10*60*1000
-
+    //Set Expire 
+    this.resetPasswordExpire= Date.now() +10*60*1000
     return resetToken
- }
+  }
+
+  // Update the getResetPasswordToken method
+UserSchema.methods.getResetPasswordToken = function() {
+  // Generate the 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Set the OTP and its expiration time
+  this.resetPasswordToken = otp;
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  // Return the generated OTP
+  return otp;
+};
+
 
  module.exports=mongoose.model('User',UserSchema)

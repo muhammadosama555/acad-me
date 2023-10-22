@@ -4,10 +4,14 @@ import {
   Publish,
 } from "@material-ui/icons";
 import { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetUserDetails, useUpdateUser } from "../../apiCalls/userApiCalls";
 import normalDate from "../../utils";
 import "./user.css";
+import { DataGrid } from "@material-ui/data-grid";
+import { DeleteOutline } from "@material-ui/icons";
+import { useDeleteOrder } from "../../apiCalls/orderApiCalls";
+import Loader from '../../components/Loader'
 
 export default function User() {
 
@@ -18,9 +22,10 @@ export default function User() {
   const { userId } = useParams()
   const { isLoading:isUserLoading, data:userDetails, isError:isUserError , error:userError, } = useGetUserDetails(userId)
   const { mutate:updateUserMutate, isLoading:isUpdateUserLoading, isError:isUpdateUserError, error:updateUserError} = useUpdateUser(userId);
+  const {mutate, isLoading, isError, error} = useDeleteOrder();
 
   if (isUserLoading) {
-    return <h2>Loading...</h2>;
+    return <Loader/>
   }
 
   if (isUserError) {
@@ -32,7 +37,7 @@ export default function User() {
   }
   
   if (isUpdateUserLoading) {
-    return <h2>Loading...</h2>;
+    return <Loader/>
   }
 
   if (isUpdateUserError) {
@@ -42,6 +47,17 @@ export default function User() {
       </>
     );
   }
+  if (isLoading) {
+    return <Loader/>
+  }
+  
+  if (isError) {
+    return <h2>{error.message}</h2>
+  }
+  
+    const handleDelete = (orderId) => {
+       mutate(orderId)
+    };
 
 
   const handleSubmit = (event) => {
@@ -56,8 +72,38 @@ export default function User() {
     console.log(data);
   };
 
+  const columns = [
+    { field: "_id", headerName: "ID", width: 90 }, 
+    { field: "totalAmount", headerName: "Total", width: 250 },
+    { field: "paymentStatus", headerName: "Payment", width: 250 },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 200,
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <>
+            <Link to={"/order/" + params.row._id}>
+              <button className="orderListEdit">Edit</button>
+            </Link>
+            <DeleteOutline
+              className="orderListDelete"
+              onClick={() => handleDelete(params.row._id)}
+            />
+          </>
+        );
+      },
+    },
+  ];
+
 
   return (
+    <>
     <div className="user">
       <div className="userTitleContainer">
         <h1 className="userTitle">Edit User</h1>
@@ -137,6 +183,19 @@ export default function User() {
           </form>
         </div>
       </div>
+    
     </div>
+{userDetails?.data.data.orders.length > 0 ? 
+<div className="orderList">
+<DataGrid
+  rows={userDetails?.data.data.orders}
+  getRowId={(row) => row._id}
+  disableSelectionOnClick
+  columns={columns}
+  pageSize={8}
+  checkboxSelection
+/>
+</div> : null}
+</>
   );
 }

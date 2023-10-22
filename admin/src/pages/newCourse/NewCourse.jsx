@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { usePostCourse } from "../../apiCalls/courseApiCalls";
 import "./newCourse.css";
+import Loader from '../../components/Loader'
 
 export default function NewCourse() {
 
@@ -19,7 +20,7 @@ export default function NewCourse() {
   
     
   if (isPostCourseLoading) {
-    return <h2>Loading...</h2>
+    return <Loader/>
   }
   
   if (isPostCourseError) {

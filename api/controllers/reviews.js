@@ -44,6 +44,9 @@ exports.getReview=asyncHandler(async(req,res,next)=>{
  
   })
 })
+
+
+
 // Post   add Reviews
 //route    Post   /api/v1/bootcamps/:bootcampId/reviews
 //access   private
@@ -69,6 +72,8 @@ await bootcamp.calculateAverageRating();
   })
 
 })
+
+
 // Update   Reviews
 //route    Put   /api/v1/reviews/:id
 //access   private

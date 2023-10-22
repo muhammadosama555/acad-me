@@ -54,7 +54,10 @@ const Login = () => {
                               />
                     </div>
                 </div>
-                <a href="#" className="flex text-blue-400 font-semibold justify-end mb-4 hover:text-red-color">Forgot Password?</a>
+                
+              <div  className="flex text-blue-400 font-semibold justify-end mb-4 hover:text-red-color">
+                <Link to="/forgetPassword">Forgot Passsword?</Link>
+                </div>
 
                 <div className="flex justify-center mt-5 pb-3">
                     <button
@@ -79,26 +82,6 @@ const Login = () => {
 
 
 
-
-
-
-    {/* <form onSubmit={handleSubmit}>
-      <label htmlFor="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        ref={emailInputElement}
-        required
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        ref={passwordInputElement}
-        required
-      />
-     <button type="submit">LogIn</button>
-    </form> */}
     </>
   );
 };

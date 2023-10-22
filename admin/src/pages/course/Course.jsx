@@ -6,6 +6,7 @@ import { Publish } from "@material-ui/icons";
 import { useGetCourseDetails, useUpdateCourse } from "../../apiCalls/courseApiCalls";
 import normalDate from "../../utils";
 import { useRef } from "react";
+import Loader from '../../components/Loader'
 
 export default function Course() {
 
@@ -23,7 +24,7 @@ export default function Course() {
   
 
     if (isCourseDetailsLoading) {
-        return <h2>...isLoading</h2>
+      return <Loader/>
       }
       
       if (isCourseDetailsError) {
@@ -31,7 +32,7 @@ export default function Course() {
       }
 
       if (isUpdateCourseLoading) {
-        return <h2>Loading...</h2>
+        return <Loader/>
       }
       
       if (isUpdateCourseError) {

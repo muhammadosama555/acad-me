@@ -1,10 +1,10 @@
 import { toast } from "react-toastify";
 import axios from "axios"
-import { useMutation } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { loginSuccess, logoutSuccess } from "../redux/reducers/userReducers ";
-import { persistor } from "../redux/store";
+import { persistor, store } from "../redux/store";
 import { useDispatch } from "react-redux";
 console.log(toast)
 
@@ -62,3 +62,95 @@ return useMutation(logout,{
   },
 })
 }
+
+// get user details
+
+const getUserDetails = async (userId,token) => {
+  return await axios.get(`${API_BASE_URL}/auth/users/${userId}`, {
+    headers: {
+      'authorization': "Bearer " + token,
+    },
+  })
+}
+
+export const useGetUserDetails = (userId) => {
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return useQuery(['user', userId], () => getUserDetails(userId, token), {
+    enabled: !!token, // Only enable the query when the token is available (user is logged in)
+  })
+  
+}
+
+// update user
+
+export const updateUser = async (userData) => {
+  console.log(userData)
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.put(`${API_BASE_URL}/auth/users/${userData.userId}`, userData,{
+    headers:{
+      'authorization':"Bearer "+ token
+    }
+  });
+}
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+
+return useMutation(updateUser,{
+  onSuccess: (data) => {
+    toast.success('Profile Updated Sucessfully!');
+    queryClient.invalidateQueries("user");
+
+  },
+})
+}
+
+// change password
+
+export const changePassword = async (userData) => {
+  return axios.post(`${API_BASE_URL}/auth/change-password`, userData, {
+    headers: {
+      authorization: "Bearer " + userData.token,
+    },
+  });
+};
+
+export const useChangePassword = () => {
+  return useMutation(changePassword, {
+    onSuccess: (data) => {
+      toast.success("Password changed Successfully!");
+    },
+  });
+};
+
+// Generate Password
+
+export const generatePassword = async (userData) => {
+  return axios.put(`${API_BASE_URL}/auth/resetPassword`, userData);
+};
+
+export const useGeneratePassword = () => {
+  const navigate = useNavigate();
+  return useMutation(generatePassword, {
+    onSuccess: (data) => {
+      navigate("/");
+      toast.success("Password Generated Successfully!");
+    },
+  });
+};
+
+// Generate Otp
+
+export const generateOtp = async (userData) => {
+  return axios.post(`${API_BASE_URL}/auth/generateOtp`, userData);
+};
+
+export const useGenerateOtp = () => {
+  return useMutation(generateOtp, {
+    onSuccess: (data) => {
+      toast.success("OTP Generated Successfully!");
+    },
+  });
+};

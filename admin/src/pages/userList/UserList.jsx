@@ -4,6 +4,7 @@ import { DeleteOutline } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useDeleteUser, useGetUsers } from "../../apiCalls/userApiCalls";
+import Loader from '../../components/Loader'
 
 
 export default function UserList() {
@@ -12,7 +13,7 @@ export default function UserList() {
   const {mutate:deleteUserMutate, isLoading:isDeleteUserLoading, isError:isDeleteUserError, error:deleteUserError} = useDeleteUser();
 
   if (isUsersLoading) {
-    return <h2>...isLoading</h2>
+    return <Loader/>
   }
   
   if (isUsersError) {
@@ -20,7 +21,7 @@ export default function UserList() {
   }
 
   if (isDeleteUserLoading) {
-    return <h2>...isLoading</h2>
+    return <Loader/>
   }
   
   if (isDeleteUserError) {

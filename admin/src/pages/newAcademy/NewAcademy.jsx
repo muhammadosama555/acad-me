@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { usePostAcademy } from "../../apiCalls/academyApiCalls";
 import "./newAcademy.css";
+import Loader from '../../components/Loader'
 
 export default function NewAcademy() {
 
@@ -17,7 +18,7 @@ export default function NewAcademy() {
 
 
   if (isPostAcademyLoading) {
-    return <h2>Loading...</h2>;
+    return <Loader/>
   }
 
   if (isPostAcademyError) {

@@ -11,7 +11,7 @@ const Academies = () => {
     if (isAcademiesLoading) {
       return <Loader/>
     }
-    console.log(academies)
+
 
   return (
     <>

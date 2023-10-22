@@ -10,6 +10,19 @@ const Bootcamp = require('../models/Bootcamp.js')
 //access   public
 
 exports.getCourses = asyncHandler(async (req, res, next) => {
+
+  const bootcampId = req.params.bootcampId; // Extract bootcampId from request parameters
+
+  // If bootcampId is present, return only courses of that bootcamp
+  if (bootcampId) {
+    const courses = await Course.find({ bootcamp: bootcampId });
+
+    res.status(200).json({
+      success: true,
+      data: courses,
+    });
+  } else {
+
   const page = req.query.page;
   const limit = req.query.limit;
   const sort = req.query.sort;
@@ -71,6 +84,7 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
     totalPages,
     data: courses,
   });
+}
 });
 
   

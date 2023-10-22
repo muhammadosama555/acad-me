@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { usePostUser } from "../../apiCalls/userApiCalls";
 import "./newUser.css";
+import Loader from '../../components/Loader'
 
 export default function NewUser() {
 
@@ -11,7 +12,7 @@ export default function NewUser() {
   const { mutate:postUserMutate, isLoading:isPostUserLoading, isError:isPostUserError , error:postUserError } = usePostUser()
 
   if (isPostUserLoading) {
-    return <h2>Loading...</h2>;
+    return <Loader/>
   }
 
   if (isPostUserError) {

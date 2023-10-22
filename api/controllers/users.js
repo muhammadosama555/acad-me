@@ -9,8 +9,12 @@ const User = require('../models/User.js')
 //access  Private/admin
 
 exports.getAllUser = asyncHandler(async (req,res,next)=>{
+    const users = await User.find().populate('orders');
    
-    res.status(200).json(res.advanceResults)
+    res.status(200).json({
+        success:true,
+        data:users
+    })
     
 })
 //desc    get single user
@@ -19,7 +23,7 @@ exports.getAllUser = asyncHandler(async (req,res,next)=>{
 
 exports.getSingleUser = asyncHandler(async (req,res,next)=>{
    
-   const user =await User.findById(req.params.id) 
+   const user =await User.findById(req.params.id) .populate('orders');
     res.status(200).json({
         success:true,
         data:user
@@ -49,6 +53,11 @@ exports.updateUser = asyncHandler(async (req,res,next)=>{
       new:true,
       runValidators:true
    }) 
+
+   if (!user) {
+    return next(new ErrorResponse("User not found", 404));
+  }
+  
     res.status(200).json({
         success:true,
         data:user

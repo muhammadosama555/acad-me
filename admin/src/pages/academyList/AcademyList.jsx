@@ -5,6 +5,7 @@ import { productRows } from "../../dummyData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useDeleteAcademy, useGetAcadimies } from "../../apiCalls/academyApiCalls";
+import Loader from "../../components/Loader";
 
 export default function AcademyList() {
 
@@ -12,7 +13,7 @@ export default function AcademyList() {
  const {mutate, isLoading, isError, error} = useDeleteAcademy();
 
  if (isAcadamiesLoading) {
-  return <h2>...isLoading</h2>
+  return <Loader/>
 }
 
 if (isAcadamiesError) {
@@ -20,7 +21,7 @@ if (isAcadamiesError) {
 }
 
  if (isLoading) {
-  return <h2>...isLoading</h2>
+  return <Loader/>
 }
 
 if (isError) {

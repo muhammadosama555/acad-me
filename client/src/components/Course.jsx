@@ -1,18 +1,43 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
+import { addToCart } from '../redux/reducers/cartReducers';
+import { useGetUserDetails } from '../apiCalls/userApiCalls';
+
 
 const Course = ({course}) => {
+
+    const dispatch = useDispatch();
+    const { currentUser } = useSelector((state) => state.userSlice);
+    const userId = currentUser?.data._id
+
+    const { data:userDetails } = useGetUserDetails(userId)
+    
+
+    const isCourseOrdered = userDetails?.data.data.orders.some(order => {
+        return order.itemsOrderd.some(item => item === course._id);
+      });
+
+
+    // Handler function for adding the course to the cart
+    const handleAddToCart = () => {
+      // Dispatch the addToCart action with the course as payload
+      dispatch(addToCart({ course, userId }))
+      console.log("add to cart",userId)
+    }
 
   return (
         <>
      <div className="card bg-white rounded-xl overflow-hidden w-[350px] md:w-[480px] lg:w-[420px] xl:w-[400px] shadow-2xl">
+             
                 <div className="relative">
-                    <div className="cart absolute right-4 top-4 bg-white w-12 pt-1 h-12 flex justify-center items-center rounded-full hover:bg-yellow-400 hover:cursor-pointer">
+                {!isCourseOrdered && currentUser?.data.role === "user" ?
+                    <div onClick={handleAddToCart} className="cart absolute right-4 top-4 bg-white w-12 pt-1 h-12 flex justify-center items-center rounded-full hover:bg-yellow-400 hover:cursor-pointer">
                         <i className="text-xl fa-solid fa-cart-shopping"></i>
-                    </div>
+                    </div>: null}
                     <div className="bg-cover w-[350px] h-[250px] md:w-[480px] md:h-[300px] lg:w-[420px] lg:h-[270px] xl:w-[400px] xl:h-[260px]" style={{ backgroundImage: `url("images/course1.jpg")`}}></div>
                     
-                </div>
+                </div> 
                 <div className="content mx-4 md:mx-8 lg:mx-6 xl:mx-6">
                     <div className="flex items-center justify-between pt-4 pb-2 md:pt-8 md:pb-4 lg:pt-6 lg:pb-3">
                         <div className="flex items-center gap-2 category rounded-md px-4 py-2 bg-opacity-20 bg-yellow-400">
@@ -53,16 +78,6 @@ const Course = ({course}) => {
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-    {/* <div>
-    <Link to={`/coursedetails/${course._id}`}>{course.title}</Link>
-    </div> */}
     </>
   )
 }

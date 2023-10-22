@@ -13,24 +13,26 @@ import AcademyList from "./pages/academyList/AcademyList";
 import Academy from "./pages/academy/Academy";
 import Course from "./pages/course/Course";
 import NewCourse from "./pages/newCourse/NewCourse";
-import { useGetUser } from "./apiCalls/userApiCalls";
+import { QueryClientProvider,QueryClient } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { useSelector } from "react-redux";
+import OrderList from "./pages/orderList/OrderList";
+import Order from "./pages/order/Order";
 
 
-
-
-
+const queryClient = new QueryClient()
 
 function App() {
 
-  const { isLoading:isUserLoading, data:user, isError:isUserError , error:userError } = useGetUser()
+  const { currentUser } = useSelector((state) => state.userSlice);
 
-  console.log(user)
+  console.log(currentUser?.data)
 
   return (
     <>
-    
+      <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-    {user?.data.role == "admin" ? ( 
+    {currentUser?.data.role === 'admin'  ? ( 
     <>
     <Topbar />
           <div className="container">
@@ -45,6 +47,8 @@ function App() {
           <Route path="/newAcademy" element={<NewProduct />}></Route>
           <Route path="/course/:courseId" element={<Course />}></Route>
           <Route path="/newCourse/:academyId" element={<NewCourse />}></Route>
+          <Route path="/orders" element={<OrderList/>}></Route>
+          <Route path="/order/:orderId" element={<Order/>}></Route>
         </Routes>
         </div>
     </>
@@ -52,8 +56,11 @@ function App() {
       <Login />
     )
     }
-          
+  
+  
   </BrowserRouter>
+  <ReactQueryDevtools intialIsOpen={false} position="bottom-right" />
+    </QueryClientProvider>
 
   </>
   );

@@ -7,6 +7,9 @@ import { useGetAcademyCourses, useGetAcademyDetails, useUpdateAcademy } from "..
 import normalDate from "../../utils";
 import { useRef } from "react";
 import { useDeleteCourse } from "../../apiCalls/courseApiCalls";
+import { DataGrid } from "@material-ui/data-grid";
+import { DeleteOutline } from "@material-ui/icons";
+import Loader from '../../components/Loader'
 
 export default function Academy() {
 
@@ -27,7 +30,7 @@ export default function Academy() {
   
   
     if (isAcademyLoading) {
-      return <h2>Loading...</h2>;
+      return <Loader/>
     }
   
     if (isAcademyError) {
@@ -39,7 +42,7 @@ export default function Academy() {
     }
 
     if (isUpdateAcademyLoading) {
-      return <h2>Loading...</h2>;
+      return <Loader/>
     }
   
     if (isUpdateAcademyError) {
@@ -51,7 +54,7 @@ export default function Academy() {
     }
 
     if (isCoursesLoading) {
-      return <h2>Loading...</h2>;
+      return <Loader/>
     }
   
     if (isCoursesError) {
@@ -63,7 +66,7 @@ export default function Academy() {
     }
 
     if (isDeleteCourseLoading) {
-      return <h2>...isLoading</h2>
+      return <Loader/>
     }
     
     if (isDeleteCourseError) {
@@ -90,17 +93,63 @@ export default function Academy() {
       const deleteHandler = (courseId) => {
         deleteCourseMutate(courseId)
       };
+
+
+      const columns = [
+        { field: "_id", headerName: "ID", width: 90 },
+        {
+          field: "title",
+          headerName: "Title",
+          width: 200,
+          renderCell: (params) => {
+            return (
+              <div className="productListItem">
+                <img className="productListImg" src={params.row.img} alt="" />
+                {params.row.title}
+              </div>
+            );
+          },
+        },
+        { field: "description", headerName: "Description", width: 200 },
+        {
+          field: "weeks",
+          headerName: "Weeks",
+          width: 120,
+        },
+        {
+          field: "tuition",
+          headerName: "Tuition",
+          width: 160,
+        },
+        {
+          field: "action",
+          headerName: "Action",
+          width: 150,
+          renderCell: (params) => {
+            return (
+              <>
+                <Link to={"/course/" + params.row._id}>
+                  <button className="productListEdit">Edit</button>
+                </Link>
+                <DeleteOutline
+                  className="productListDelete"
+                   onClick={() => deleteHandler(params.row._id)}
+                />
+              </>
+            );
+          },
+        },
+      ];
   
     
   return (
+    <>
     <div className="product">
       <div className="productTitleContainer">
         <h1 className="productTitle">Edit Academy</h1>
       </div>
       <div className="productTop">
-          <div className="productTopLeft">
-              <Chart data={productData} dataKey="Sales" title="Sales Performance"/>
-          </div>
+        
           {academyDetails && (
             <div className="productTopRight">
             <div className="productInfoTop">
@@ -136,17 +185,8 @@ export default function Academy() {
                     <span className="productInfoKey">created At:</span>
                     <span className="productInfoValue">{normalDate(academyDetails.data.data.createdAt)}</span>
                 </div>
-                <h1>Courses</h1>
-                <Link to={`/newCourse/${academyId}`}>
-          <button className="productAddButton">Create</button>
-        </Link>
-                {coursesData?.data.data.map((course)=>(
-        <div  key={course._id}>{
-       <Link to={`/course/${course._id}`}>{course.title}</Link>}
-       <button onClick={()=>deleteHandler(course._id)}>delete</button>
-       </div>
-
-      ))}
+               
+               
             </div>
         </div>
           )}
@@ -221,5 +261,22 @@ export default function Academy() {
           </form>
       </div>
     </div>
+{coursesData?.data.data.length > 0 ? 
+<div className="productList">
+<div style={{ padding: "10px 0px" }}>
+  <Link to={`/newCourse/${academyId}`}>
+    <button className="userAddButton">Create</button>
+  </Link>
+</div>
+<DataGrid
+  rows={coursesData?.data.data}
+  getRowId={(row) => row._id}
+  disableSelectionOnClick
+  columns={columns}
+  pageSize={8}
+  checkboxSelection
+/>
+</div>:null}
+</>
   );
 }

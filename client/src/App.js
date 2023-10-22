@@ -18,6 +18,12 @@ import SearchCourses from './pages/SearchCourses';
 import { ScrollToTop } from "./hooks/ScrollToTop";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cart from './pages/Cart';
+import Shipping from './pages/Shipping';
+import ConfirmOrder from './pages/ConfirmOrder';
+import Profile from './pages/Profile';
+import ChangePassword from './pages/ChangePassword';
+import ForgetPassword from './pages/ForgetPassword';
 
 const queryClient = new QueryClient()
 
@@ -41,6 +47,12 @@ function App() {
     <Route path='/updatecourse/:courseId' element={<UpdateCourse/>}/>
     <Route path='/searchacademies' element={<SearchAcademies/>}/>
     <Route path='/searchcourses' element={<SearchCourses/>}/>
+    <Route path='/cart' element={<Cart/>}/>
+    <Route path='/order/shipping' element={<Shipping/>}/>
+    <Route path='/order/confirmOrder' element={<ConfirmOrder/>}/>
+    <Route path='/profile' element={<Profile/>}/>
+    <Route path='/changePassword' element={<ChangePassword/>}/>
+    <Route path='/forgetPassword' element={<ForgetPassword/>}/>
     </Routes>
     <div id='contactUs'>
     <Footer />

@@ -89,7 +89,7 @@ exports.getSingleBootcamps=asyncHandler( async(req,res,next)=>{
   
     const bootcamps= await Bootcamp.findById(req.params.id)
     if(!bootcamps){
-      next(err)
+      return next(new ErrorResponse('no bootcamp with given id',400))
     }
 
     res.status(201).json({

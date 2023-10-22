@@ -1,11 +1,14 @@
 import { useMutation, useQuery, useQueryClient} from 'react-query'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { API_BASE_URL } from "../config";
+import { store } from "../redux/store";
+
 
 // get course details
 
 const getCourseDetails = async (courseId) => {
-  return await axios.get(`/api/v1/courses/${courseId}`)
+  return await axios.get(`${API_BASE_URL}/courses/${courseId}`)
 }
 
 export const useGetCourseDetails = (courseId) => {
@@ -17,10 +20,11 @@ export const useGetCourseDetails = (courseId) => {
 
 export const updateCourse = async (courseData) => {
   console.log(courseData)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.put(`/api/v1//courses/${courseData.courseId}`, courseData,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.put(`${API_BASE_URL}/courses/${courseData.courseId}`, courseData,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
@@ -31,6 +35,7 @@ return useMutation(updateCourse,{
   onSuccess: (data) => {
     console.log(data)
     queryClient.invalidateQueries('course');
+
   },
 })
 }
@@ -39,10 +44,11 @@ return useMutation(updateCourse,{
 
 export const postCourse = async (courseData) => {
   console.log(courseData)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.post("/api/v1/courses", courseData,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.post(`${API_BASE_URL}/courses`, courseData,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
@@ -53,6 +59,7 @@ return useMutation(postCourse,{
   onSuccess: (data) => {
     console.log(data,data.data.data.bootcamp)
     navigate(`/academy/${data.data.data.bootcamp}`) 
+
   },
 })
 }
@@ -61,10 +68,11 @@ return useMutation(postCourse,{
 
 export const deleteCourse = async (courseId) => {
   console.log(courseId)
-  const user = JSON.parse(localStorage.getItem("user")) || null
-  return axios.delete(`/api/v1/courses/${courseId}`,{
+  const currentUser = store.getState().userSlice.currentUser;
+  const token = currentUser ? currentUser.token : null;
+  return axios.delete(`${API_BASE_URL}/courses/${courseId}`,{
     headers:{
-      'authorization':"Bearer "+ user.token
+      'authorization':"Bearer "+ token
     }
   });
 }
@@ -74,6 +82,7 @@ export const useDeleteCourse = () => {
 return useMutation(deleteCourse,{
   onSuccess: (data) => {
     queryClient.invalidateQueries('courses');
+   
   },
 })
 }

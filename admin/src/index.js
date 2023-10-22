@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { QueryClientProvider,QueryClient } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
+import {Provider} from "react-redux"
+import {store,persistor} from './redux/store.js';
+import { PersistGate } from 'redux-persist/integration/react';
 
-const queryClient = new QueryClient()
+
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
     <App />
-    <ReactQueryDevtools intialIsOpen={false} position="bottom-right" />
-    </QueryClientProvider>
+    </PersistGate>
+   </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

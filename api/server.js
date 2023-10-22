@@ -11,6 +11,7 @@ const courses=require('./routes/courses.js')
 const auth=require('./routes/auth.js')
 const reviews=require('./routes/reviews')
 const users=require('./routes/users')
+const orders=require('./routes/order.js')
 
 
 const morgan= require("morgan")
@@ -55,6 +56,7 @@ app.use('/api/v1/courses',courses)
 app.use('/api/v1/auth',auth)
 app.use('/api/v1/reviews',reviews)
 app.use('/api/v1/auth/users',users)
+app.use('/api/v1/orders',orders)
 
 
 
