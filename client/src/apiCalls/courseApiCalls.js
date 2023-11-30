@@ -33,7 +33,8 @@ export const postCourse = async (courseData) => {
   const token = currentUser ? currentUser.token : null;
   return axios.post(`${API_BASE_URL}/courses`, courseData,{
     headers:{
-      'authorization':"Bearer "+ token
+      'authorization':"Bearer "+ token,
+      "Content-Type": "multipart/form-data",
     }
   });
 }

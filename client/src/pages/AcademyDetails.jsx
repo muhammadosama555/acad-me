@@ -160,7 +160,7 @@ console.log(coursesData)
      <div className="cart absolute right-4 top-4 bg-white w-12 pt-1 h-12 flex justify-center items-center rounded-full hover:bg-yellow-400 hover:cursor-pointer">
          <i className="text-xl fa-solid fa-cart-shopping"></i>
      </div>
-     <div className="bg-cover w-[350px] h-[250px] md:w-[480px] md:h-[300px] lg:w-[420px] lg:h-[270px] xl:w-[400px] xl:h-[260px]" style={{ backgroundImage: `url("images/course1.jpg")`}}></div>
+     <div className="bg-cover w-[350px] h-[250px] md:w-[480px] md:h-[300px] lg:w-[420px] lg:h-[270px] xl:w-[400px] xl:h-[260px]" style={{ backgroundImage: `url(${course?.imageUrl})`}}></div>
      
  </div>
  <div className="content mx-4 md:mx-8 lg:mx-6 xl:mx-6">

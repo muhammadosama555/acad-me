@@ -1,0 +1,321 @@
+<!-- ------------------------------------Academies------------------------------------------------ -->
+
+    name: "Code Masters Bootcamp",
+    imageUrl: "https://example.com/code-masters.jpg",
+    description: "Join our intensive coding bootcamp and become a master in web development.",
+    website: "https://www.codemastersbootcamp.com",
+    phone: 1234567890,
+    email: "info@codemastersbootcamp.com",
+    address: "123 Coding Lane, Suite 101",
+    location: {
+      type: "Point",
+      coordinates: [-73.9878, 40.7666],
+      formattedAddress: "123 Coding Lane, Suite 101, New York, NY 10001, USA",
+      street: "123 Coding Lane",
+      city: "New York",
+      state: "NY",
+      zipcode: "10001",
+      country: "USA"
+    },
+    careers: ["Web Development", "Mobile Development"],
+    averageRating: 4.5,
+    averageCost: 12000,
+    photo: "code-masters-photo.jpg",
+    housing: true,
+    jobAssistance: true,
+    jobGurantee: false,
+    acceptGi: true,
+    createdAt: new Date(),
+    user: ObjectId("60ae781be3b872b6e0b8671a") // Replace with a valid user ObjectId
+  
+
+
+    name: "Design Wizards Academy",
+    imageUrl: "https://example.com/design-wizards.jpg",
+    description: "Unleash your creativity with our UI/UX design program. Join now and become a design wizard!",
+    website: "https://www.designwizardsacademy.com",
+    phone: 9876543210,
+    email: "info@designwizardsacademy.com",
+    address: "456 Design Street, Suite 201",
+    location: {
+      type: "Point",
+      coordinates: [-74.0059, 40.7128],
+      formattedAddress: "456 Design Street, Suite 201, New York, NY 10002, USA",
+      street: "456 Design Street",
+      city: "New York",
+      state: "NY",
+      zipcode: "10002",
+      country: "USA"
+    },
+    careers: ["UI/UX", "Graphic Design"],
+    averageRating: 4.2,
+    averageCost: 10000,
+    photo: "design-wizards-photo.jpg",
+    housing: false,
+    jobAssistance: true,
+    jobGurantee: true,
+    acceptGi: false,
+    createdAt: new Date(),
+    user: ObjectId("60ae781be3b872b6e0b8671b") // Replace with a valid user ObjectId
+
+
+
+    name: "Data Science Hub",
+    imageUrl: "https://example.com/data-science-hub.jpg",
+    description: "Explore the world of data science and machine learning at Data Science Hub.",
+    website: "https://www.datasciencehub.com",
+    phone: 1112223333,
+    email: "info@datasciencehub.com",
+    address: "789 Data Lane, Suite 301",
+    location: {
+      type: "Point",
+      coordinates: [-118.2427, 34.0522],
+      formattedAddress: "789 Data Lane, Suite 301, Los Angeles, CA 90001, USA",
+      street: "789 Data Lane",
+      city: "Los Angeles",
+      state: "CA",
+      zipcode: "90001",
+      country: "USA"
+    },
+    careers: ["Data Science", "Machine Learning"],
+    averageRating: 4.8,
+    averageCost: 15000,
+    photo: "data-science-hub-photo.jpg",
+    housing: true,
+    jobAssistance: true,
+    jobGurantee: true,
+    acceptGi: true,
+    createdAt: new Date(),
+    user: ObjectId("60ae781be3b872b6e0b8671c") // Replace with a valid user ObjectId
+  
+
+
+    name: "Business Boost Academy",
+    imageUrl: "https://example.com/business-boost.jpg",
+    description: "Elevate your business skills with our comprehensive business development programs.",
+    website: "https://www.businessboostacademy.com",
+    phone: 9998887777,
+    email: "info@businessboostacademy.com",
+    address: "101 Business Street, Suite 501",
+    location: {
+      type: "Point",
+      coordinates: [-87.6298, 41.8781],
+      formattedAddress: "101 Business Street, Suite 501, Chicago, IL 60601, USA",
+      street: "101 Business Street",
+      city: "Chicago",
+      state: "IL",
+      zipcode: "60601",
+      country: "USA"
+    },
+    careers: ["Business Development", "Entrepreneurship"],
+    averageRating: 4.6,
+    averageCost: 12000,
+    photo: "business-boost-photo.jpg",
+    housing: false,
+    jobAssistance: true,
+    jobGurantee: false,
+    acceptGi: false,
+    createdAt: new Date(),
+    user: ObjectId("60ae781be3b872b6e0b8671d") // Replace with a valid user ObjectId
+  
+ 
+
+    name: "Mobile App Masters",
+    imageUrl: "https://example.com/mobile-app-masters.jpg",
+    description: "Dive into the world of mobile app development and become a master at crafting innovative apps.",
+    website: "https://www.mobileappmasters.com",
+    phone: 7776665555,
+    email: "info@mobileappmasters.com",
+    address: "202 App Avenue, Suite 601",
+    location: {
+      type: "Point",
+      coordinates: [-95.3698, 29.7604],
+      formattedAddress: "202 App Avenue, Suite 601, Houston, TX 77002, USA",
+      street: "202 App Avenue",
+      city: "Houston",
+      state: "TX",
+      zipcode: "77002",
+      country: "USA"
+    },
+    careers: ["Mobile App Development", "Software Engineering"],
+    averageRating: 4.4,
+    averageCost: 13000,
+    photo: "mobile-app-masters-photo.jpg",
+    housing: true,
+    jobAssistance: false,
+    jobGurantee: false,
+    acceptGi: true,
+    createdAt: new Date(),
+    user: ObjectId("60ae781be3b872b6e0b8671e") // Replace with a valid user ObjectId
+
+
+
+<!-- ------------------------------------Academies Reviews------------------------------------------------ -->
+
+
+Code Masters Bootcamp
+Review 1:
+
+Title: "Fantastic Coding Experience!"
+Text: "I attended Code Masters Bootcamp, and it was an incredible journey. The instructors were knowledgeable, the curriculum was well-structured, and the hands-on coding exercises were challenging yet rewarding. I highly recommend this bootcamp to anyone serious about mastering web development."
+Rating: 4.5
+Review 2:
+
+Title: "Top-notch Learning Environment"
+Text: "Code Masters Bootcamp exceeded my expectations. The atmosphere was conducive to learning, and the support from both staff and fellow students was outstanding. The real-world projects helped solidify my skills. I'm grateful for the experience and the knowledge gained."
+Rating: 4.8
+Design Wizards Academy
+Review 3:
+
+Title: "Creative Paradise!"
+Text: "Design Wizards Academy is a creative paradise for aspiring designers. The courses are engaging, and the instructors are passionate about nurturing creativity. The hands-on projects allowed me to apply theoretical concepts to real-world design challenges. A must for anyone passionate about UI/UX."
+Rating: 4.3
+Review 4:
+
+Title: "Transformative Design Courses"
+Text: "I enrolled in Design Wizards Academy to enhance my UI/UX skills, and it was a transformative experience. The curriculum covered a wide range of design principles, and the faculty provided valuable insights. The academy's commitment to excellence is commendable."
+Rating: 4.6
+Data Science Hub
+Review 5:
+
+Title: "Data Science Excellence"
+Text: "Data Science Hub is the go-to place for anyone passionate about data science. The courses are well-structured, and the hands-on projects provide practical experience. The instructors are experts in their field, and the support from the community is exceptional."
+Rating: 4.9
+Review 6:
+
+Title: "Comprehensive Machine Learning Program"
+Text: "I had an enriching experience at Data Science Hub, especially in their machine learning program. The depth of coverage and the guidance from instructors made complex topics accessible. The academy's commitment to student success is evident."
+Rating: 4.7
+Business Boost Academy
+Review 7:
+
+Title: "Boost Your Business Skills!"
+Text: "Business Boost Academy provides a comprehensive program for business development. The courses cover a wide range of topics, and the practical insights gained are invaluable. The networking opportunities and mentorship added immense value to my entrepreneurial journey."
+Rating: 4.4
+Review 8:
+
+Title: "Practical Entrepreneurial Wisdom"
+Text: "Attending Business Boost Academy was a game-changer for my startup. The practical insights and case studies shared during the courses were instrumental in refining my business strategy. Highly recommend for aspiring entrepreneurs."
+Rating: 4.2
+Mobile App Masters
+Review 9:
+
+Title: "Mastering Mobile App Development"
+Text: "Mobile App Masters provided an excellent platform to dive into mobile app development. The courses were well-paced, and the projects allowed me to build a diverse portfolio. The instructors were supportive, and the community was a great resource for learning."
+Rating: 4.6
+Review 10:
+
+Title: "Innovative App Development Program"
+Text: "Enrolling in Mobile App Masters was a wise decision. The program covers the latest trends in mobile app development, and the practical exercises challenged me to think innovatively. The academy's focus on real-world applications sets it apart."
+Rating: 4.5
+
+
+
+<!-- ------------------------------------Academies Courses------------------------------------------------ -->
+
+
+
+Code Masters Bootcamp Courses
+Course 1:
+
+Title: "Web Development Fundamentals"
+Description: "Get started with the basics of web development. Cover HTML, CSS, and JavaScript to build a strong foundation for creating dynamic websites."
+Weeks: "8"
+Tuition: 8000
+Minimum Skill: "beginner"
+Scholarship Available: true
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671a") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b8671f") // Replace with a valid User ObjectId
+Course 2:
+
+Title: "Advanced React Development"
+Description: "Dive deep into the world of React.js. Learn advanced concepts and best practices for building scalable and maintainable React applications."
+Weeks: "12"
+Tuition: 12000
+Minimum Skill: "advance"
+Scholarship Available: false
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671a") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86720") // Replace with a valid User ObjectId
+Design Wizards Academy Courses
+Course 3:
+
+Title: "UI/UX Design Essentials"
+Description: "Master the essentials of UI/UX design. Explore user-centered design principles and create visually appealing and user-friendly interfaces."
+Weeks: "10"
+Tuition: 10000
+Minimum Skill: "intermediate"
+Scholarship Available: true
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671b") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86721") // Replace with a valid User ObjectId
+Course 4:
+
+Title: "Graphic Design Mastery"
+Description: "Unlock your creative potential in graphic design. Learn advanced techniques in Adobe Creative Suite and unleash your artistic flair."
+Weeks: "8"
+Tuition: 9000
+Minimum Skill: "advance"
+Scholarship Available: false
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671b") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86722") // Replace with a valid User ObjectId
+Data Science Hub Courses
+Course 5:
+
+Title: "Introduction to Data Science"
+Description: "Embark on your data science journey. Learn the fundamentals of data analysis, statistics, and programming in Python."
+Weeks: "6"
+Tuition: 6000
+Minimum Skill: "beginner"
+Scholarship Available: true
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671c") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86723") // Replace with a valid User ObjectId
+Course 6:
+
+Title: "Machine Learning Fundamentals"
+Description: "Delve into the world of machine learning. Explore algorithms, model training, and apply machine learning to real-world problems."
+Weeks: "10"
+Tuition: 12000
+Minimum Skill: "intermediate"
+Scholarship Available: false
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671c") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86724") // Replace with a valid User ObjectId
+Business Boost Academy Courses
+Course 7:
+
+Title: "Entrepreneurship Essentials"
+Description: "Equip yourself with the essentials of entrepreneurship. From business planning to marketing strategies, build a strong foundation for your startup."
+Weeks: "8"
+Tuition: 8000
+Minimum Skill: "beginner"
+Scholarship Available: true
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671d") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86725") // Replace with a valid User ObjectId
+Course 8:
+
+Title: "Strategic Business Development"
+Description: "Learn the art of strategic business development. Explore market analysis, competitive intelligence, and effective business growth strategies."
+Weeks: "12"
+Tuition: 12000
+Minimum Skill: "advance"
+Scholarship Available: false
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671d") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86726") // Replace with a valid User ObjectId
+Mobile App Masters Courses
+Course 9:
+
+Title: "Mobile App Design Principles"
+Description: "Master the principles of mobile app design. Explore user interface design, user experience, and create stunning app interfaces."
+Weeks: "8"
+Tuition: 9000
+Minimum Skill: "intermediate"
+Scholarship Available: true
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671e") // Replace with a valid Bootcamp ObjectId
+User: ObjectId("60ae781be3b872b6e0b86727") // Replace with a valid User ObjectId
+Course 10:
+
+Title: "Advanced Mobile App Development"
+Description: "Take your mobile app development skills to the next level. Dive into advanced topics like API integration, performance optimization, and deployment strategies."
+Weeks: "12"
+Tuition: 12000
+Minimum Skill: "advance"
+Scholarship Available: false
+Bootcamp: ObjectId("60ae781be3b872b6e0b8671e") // Replace with a valid Bootcamp ObjectId

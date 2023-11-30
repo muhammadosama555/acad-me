@@ -2,7 +2,8 @@ const errorResponse= require("../utils/errorResponse.js")
 const asyncHandler=require('../middlewares/async.js')
 const Course = require('../models/Course.js')
 const Bootcamp = require('../models/Bootcamp.js')
-
+const cloudinary = require("../config/cloudinary.js");
+const sharp = require("sharp");
 
 
 // get all Courses
@@ -113,37 +114,65 @@ exports.getSingleCourse=asyncHandler(async(req,res,next)=>{
         data:course
     })
 })
-// Post single Courses
-//route    POST   /api/v1/bootcamps/:bootcampId/cpurse
-//access   private
 
-exports.postNewCourse=asyncHandler(async(req,res,next)=>{
-     
-    req.body.bootcamp= req.body.bootcampId
-    req.body.user=req.user.id
-     
-    const bootcamp = await Bootcamp.findById(req.body.bootcampId)
-    if(!bootcamp){
-        return next(
-            new errorResponse('no bootcamp found with id',404)
-        )
-    }
-    // Make sure user is bootcamp owner 
-  if(bootcamp.user.toString() !==req.user.id && (req.user.role !== 'admin' || req.user.role !== 'publisher')){
-    return next(
-      new errorResponse('user id is not authorized to add a course',400)
-    )
+
+
+// Post single Courses
+// route    POST   /api/v1/bootcamps/:bootcampId/courses
+// access   private
+
+exports.postNewCourse = asyncHandler(async (req, res, next) => {
+  console.log(req.body,req.params,req.file)
+  req.body.bootcamp = req.body.bootcampId;
+  req.body.user = req.user.id;
+
+  const bootcamp = await Bootcamp.findById(req.body.bootcampId);
+
+  if (!bootcamp) {
+    return next(new errorResponse('No bootcamp found with id', 404));
   }
 
-    const course = await Course.create(req.body)
-    
+  // Make sure user is bootcamp owner
+  if (
+    bootcamp.user.toString() !== req.user.id &&
+    (req.user.role !== 'admin' || req.user.role !== 'publisher')
+  ) {
+    return next(
+      new errorResponse('User is not authorized to add a course', 400)
+    );
+  }
 
-    res.status(200).json({
-        success:true,
-       
-        data:course
-    })
-})
+  let imageUrl;
+  // Check if an image file is included in the request
+  if (req.file) {
+    const processedImage = await sharp(req.file.buffer)
+      .resize(500, 500)
+      .jpeg({ quality: 70 })
+      .toBuffer();
+
+    // Convert the buffer to a data URI
+    const dataURI = `data:image/jpeg;base64,${processedImage.toString(
+      'base64'
+    )}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      resource_type: 'image',
+      format: 'jpg',
+      public_id: `${req.user.id}_${Date.now()}`,
+    });
+
+    req.body.imageUrl = result.secure_url;
+  }
+
+
+  const course = await Course.create(req.body);
+  
+
+  res.status(200).json({
+    success: true,
+    data: course,
+  });
+});
 
 
 

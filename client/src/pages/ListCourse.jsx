@@ -14,6 +14,7 @@ const ListCourse = () => {
     const minimumSkillInputElement = useRef();
     const tuitionInputElement = useRef();
     const scholarshipAvailableInputElement = useRef();
+    const imageInputElement = useRef();
     
       
     const { mutate:postCourseMutate, isLoading:isPostCourseLoading, isError:isPostCourseError, error:postCourseError } = usePostCourse();
@@ -34,7 +35,9 @@ const ListCourse = () => {
         minimumSkill: minimumSkillInputElement.current?.value,
         tuition: tuitionInputElement.current?.value,
         scholarshipAvailable: scholarshipAvailableInputElement.current?.checked,
+        image: imageInputElement.current?.files[0],
       };
+      console.log(data)
       postCourseMutate( data );
     };
     
@@ -103,6 +106,16 @@ const ListCourse = () => {
                       ref={scholarshipAvailableInputElement}
                       />
                 </div>
+                <div className="flex flex-col gap-2">
+               
+               <input
+           type="file"
+           id="file"
+           accept="image/*"
+           ref={imageInputElement}
+           name="image"
+         />
+           </div>
                 {isPostCourseError &&
                 <div>
                   <p className='text-red-600'>{postCourseError.response.data.error}</p>

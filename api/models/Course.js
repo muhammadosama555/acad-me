@@ -7,6 +7,10 @@ const CourseSchema = new mongoose.Schema({
         trim:true,
         required:[true,'please enter course title']
     },
+    imageUrl: {
+        type: String,
+        default: null,
+      },
     description:{
         type:String,
         required:[true,'please enter course description']
