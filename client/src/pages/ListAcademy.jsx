@@ -52,7 +52,7 @@ const handleSubmit = (event) => {
     <div className="flex justify-center">
         <div className="flex flex-col w-[600px] mt-20 shadow-lg py-10 mx-8 px-5 lg:px-10 xl:px-10">
             <h1 className="text-2xl font-bold text-center pb-8">List Academy</h1>
-            <form enctype="multipart/form-data" className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
+            <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-2">
                     <label className="text-xl font-semibold" for="name">Name:</label>
                     <input

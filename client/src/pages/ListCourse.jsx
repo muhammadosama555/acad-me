@@ -47,7 +47,7 @@ const ListCourse = () => {
    <div class="flex justify-center">
         <div class="flex flex-col w-[600px] mt-20 shadow-lg py-10 mx-8 px-5 lg:px-10 xl:px-10">
             <h1 class="text-2xl font-bold text-center pb-8">List Course</h1>
-            <form action="" class="flex flex-col gap-5" onSubmit={handleSubmit}>
+            <form class="flex flex-col gap-5" onSubmit={handleSubmit}>
                 <div class="flex flex-wrap gap-2">
                     <label class="text-xl font-semibold" for="title">Title:</label>
                     <input

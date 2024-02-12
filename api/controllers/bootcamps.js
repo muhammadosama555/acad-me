@@ -108,22 +108,22 @@ exports.getSingleBootcamps=asyncHandler( async(req,res,next)=>{
 //access   private
 exports.postBootcamps=asyncHandler( async(req,res,next)=>{
     
-   // Get the authorization header from the request
-  const authHeader = req.headers.authorization;
+  const { name, description, website, address, phone, email, housing, jobAssistance, jobGurantee, acceptGi } = req.body;
+  console.log(req.files,req.file)
+    // Get the authorization header from the request
+    const authHeader = req.headers.authorization;
+    // If the authorization header doesn't exist, return an error
+    if (!authHeader) {
+      return next(new ErrorResponse('Authorization header missing', 401));
+    }
+    // Extract the token from the authorization header
+    const token = authHeader.split(' ')[1];
+    // Verify the token to get the user ID
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const userId = decodedToken.id;
 
-  // If the authorization header doesn't exist, return an error
-  if (!authHeader) {
-    return next(new ErrorResponse('Authorization header missing', 401));
-  }
- 
-  // Extract the token from the authorization header
-  const token = authHeader.split(' ')[1];
-
-  // Verify the token to get the user ID
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const userId = decodedToken.id;
-
-  let imageUrl;
+  let image;
 
   // Check if an image file is included in the request
   if (req.file) {
@@ -141,7 +141,7 @@ exports.postBootcamps=asyncHandler( async(req,res,next)=>{
       public_id: `${userId}_${Date.now()}`,
     });
 
-    imageUrl = result.secure_url;
+    image = result.secure_url;
   }
 
   
@@ -154,13 +154,23 @@ exports.postBootcamps=asyncHandler( async(req,res,next)=>{
       return next(new ErrorResponse('user with this id has already published bootcamp',400))
 
     }
-    // Create a new academy object with the imageUrl and user ID
-  const bootcamp = new Bootcamp({
-    imageUrl: imageUrl,
-    user: userId, // Set the user field to the userId
-  });
-
-  // Save the new academy to the database
+    // Create a new post object with the user ID and post data
+    const bootcamp = new Bootcamp({
+      name,
+      description,
+      website,
+      address,
+      phone,
+      email,
+      housing,
+      jobAssistance,
+      jobGurantee,
+      acceptGi,
+      imageUrl: image, // Use the Cloudinary URL here
+      user: userId,
+    });
+  
+  // Save the new post to the database
   const savedBootcamp = await bootcamp.save();
 
   // Return the new academy as the response
@@ -168,7 +178,7 @@ exports.postBootcamps=asyncHandler( async(req,res,next)=>{
     success: true,
     data: savedBootcamp,
   });
- 
+
 })
 
 //update bootcamps

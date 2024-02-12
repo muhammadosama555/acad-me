@@ -62,7 +62,6 @@ const BootcampSchema=mongoose.Schema({
       },
       careers: {
         type: [String],
-        required:true,
         enum: [
             'Web Development',
             'Mobile Development',
@@ -80,10 +79,6 @@ const BootcampSchema=mongoose.Schema({
       },
       averageCost: {
         type:Number,
-      },
-      photo: {
-        type:String,
-        default: 'no-photo.jpg'
       },
       housing:{
         type:Boolean,
